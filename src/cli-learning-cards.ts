@@ -10,8 +10,10 @@ import type { Item, SourceJson } from "./source-json.js";
  *
  * TODO and ideas
  * Finish first process implementation.
- * Add a "__skip", "__clue" special arguments
+ * Add a "__skip", "__clue", "__favorite" special arguments
  * Add a possibility to add "cards" on demand/from time to time
+ * Add a possibility to select the "select card" strategy.
+ * Add a "reverse game" possibility, or random order.
  */
 export class CliLearningCards {
   private rl?: readline.Interface;
@@ -19,6 +21,7 @@ export class CliLearningCards {
   private readonly sourcePath: URL;
   private sourceJson?: SourceJson;
   private selectedItems: Item[] = [];
+  private questionIndex = 0;
 
   constructor(sourcePath: URL) {
     this.sourcePath = sourcePath;
@@ -36,9 +39,7 @@ export class CliLearningCards {
     }
     await this.askNumberCards();
     this.selectItems();
-    this.showQuestion(this.selectedItems[0]);
-    await this.readAnswer();
-    this.isCorrect();
+    await this.processItems();
     this.showResult();
     this.saveResult();
     this.stop();
@@ -69,17 +70,22 @@ export class CliLearningCards {
    * @private
    */
   private async askNumberCards() {
+    const defaultNb = 10;
     const max = this.sourceJson?.items?.length ?? -1;
-    const answer = parseInt(
-      await this.ask(`How many cards do you want to train? (max ${max})\n`),
+    const answer = await this.ask(
+      `How many cards do you want to train? (default ${defaultNb}, max ${max})\n`,
     );
-    if (!answer || answer < 0 || answer > max) {
+    if (answer === "") {
+      this.cardsLimit = defaultNb;
+      return;
+    }
+    const cardsLimit = parseInt(answer);
+    if (cardsLimit < 0 || cardsLimit > max) {
       console.log(`Please write a valid natural number between 0 and ${max}`);
       await this.askNumberCards();
-    } else {
-      this.cardsLimit = answer;
-      console.log("answer ", this.cardsLimit);
+      return;
     }
+    this.cardsLimit = cardsLimit;
   }
 
   /**
@@ -91,34 +97,64 @@ export class CliLearningCards {
     // Default strategy is by last revision date.
     items.sort((item1, item2) => +item1.last_revision - +item2.last_revision);
     this.selectedItems = items.slice(0, this.cardsLimit);
-    console.log(this.selectedItems.map((item) => item.source_key_text));
   }
 
-  // show question
-  private showQuestion(item?: Item) {
-    if (!item) {
+  private async processItems() {
+    if (this.questionIndex >= this.cardsLimit) {
       return;
     }
-    const question = `Question: ${item.source_key_text}\n`;
-    console.log(question);
+    const item = this.selectedItems[this.questionIndex]!;
+    await this.processQuestion(item);
+    this.questionIndex++;
+    await this.processItems();
   }
 
-  // read answer or __skip
-  //   correct ? Update date  "score" and next
-  //   incorrect ? Update error and date and "next"
+  // Show question
   //   __skip ? Update date and "next"
-  private async readAnswer() {
-    console.log("to implement");
+  //   correct ? Update date  "score" and next
+  private async processQuestion(item: Item, clue = false) {
+    // TODO update error count to 0
+    const question = `${item.source_key_text}`;
+    const clueText = clue ? this.getClueText(item) : "";
+    const answer = await this.ask(`${question} ${clueText}\n`);
+    if (answer === "") {
+      await this.processQuestion(item);
+      return;
+    }
+    if (answer === "__skip") {
+      console.log(`=> ${item.source_value_text}\n`);
+      return;
+    }
+    if (answer === "__clue") {
+      await this.processQuestion(item, true);
+      return;
+    }
+    const valid = this.isCorrect(item, answer);
+    if (!valid) {
+      // TODO update errorCount
+      await this.processQuestion(item, clue);
+      return;
+    }
+    // TODO update date and show happiness
+    return;
+  }
+
+  private getClueText(item: Item): string {
+    // TODO is rough
+    const letters = item.source_value_text.split("");
+    letters.sort();
+    return `(${letters.join("")})`;
   }
 
   // Correctness strategy
   //    Simple Az===Az
   //    more complicated ? with https://www.npmjs.com/package/fast-diff
-  private isCorrect() {
-    console.log("to implement");
+  private isCorrect(item: Item, answer: string): boolean {
+    return item.source_value_text === answer;
   }
 
   // case > nb of item
+  // show correct and not correct
   private showResult() {
     console.log("to implement");
   }
