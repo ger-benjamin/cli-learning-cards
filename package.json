@@ -1,0 +1,31 @@
+{
+  "name": "cli-learning-cards",
+  "version": "1.0.0",
+  "description": "Small CLI application for repeating terms with a card system.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "npm run prettier && npm run lint && npm run build-only",
+    "build-only": "tsc --pretty",
+    "lint": "eslint src/*.ts src/**/*.ts",
+    "prettier": "prettier 'src/{**/*,*}.{js,ts,tsx}' --write",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/src/index.js"
+  },
+  "keywords": [
+    "cli",
+    "cards",
+    "learn"
+  ],
+  "author": "Benjamin Gerber",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}
