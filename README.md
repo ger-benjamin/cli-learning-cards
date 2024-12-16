@@ -11,7 +11,7 @@ npm install
 npm run build
 ```
 
-Add add a `source.json` file with this structure in the `data` folder:
+Add a `source.json` file with this structure in the `data` folder:
 
 ```json
 { 
@@ -19,7 +19,7 @@ Add add a `source.json` file with this structure in the `data` folder:
     {
       "source_key_text": "Tree",
       "source_value_text": "Arbre",
-      "varitions": {
+      "cards": {
         "Tree": "Arbre"
       },
       "last_revision": "2024-12-16T13:33:45.609Z",

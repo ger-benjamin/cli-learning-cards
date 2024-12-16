@@ -1,12 +1,13 @@
 import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { readFile } from "node:fs/promises";
+import type {SourceJson} from "./source-json.js";
 
 export class CliLearningCards {
   private rl?: readline.Interface;
   private cardsLimit = 0;
   private readonly sourcePath: URL;
-  private sourceJson?: Record<string, unknown>;
+  private sourceJson?: SourceJson;
 
   constructor(sourcePath: URL) {
     this.sourcePath = sourcePath;
@@ -15,7 +16,7 @@ export class CliLearningCards {
   async run() {
     this.rl = readline.createInterface({ input: stdin, output: stdout });
     await this.readJsonSource();
-    if (!this.sourceJson || !this.sourceJson["items"]) {
+    if (!this.sourceJson || !this.sourceJson.items) {
       console.error("Can not use source json file.");
       this.stop();
     }
@@ -37,18 +38,12 @@ export class CliLearningCards {
   }
 
   private async askNumberCards() {
-    const items =
-      this.sourceJson && this.sourceJson["items"]
-        ? this.sourceJson["items"]
-        : [];
-    const max = (items as Record<string, unknown>[]).length;
-    console.log(max);
-
+    const max = this.sourceJson?.items?.length ?? -1;
     const answer = parseInt(
       await this.ask(`How many cards do you want to train? (max ${max})\n`),
     );
-    if (!answer || answer < 0) {
-      console.log("Please write a valid natural number\n");
+    if (!answer || answer < 0 || answer > max) {
+      console.log(`Please write a valid natural number between 0 and ${max}`);
       await this.askNumberCards();
     } else {
       this.cardsLimit = answer;
