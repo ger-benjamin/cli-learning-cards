@@ -4,7 +4,7 @@ import { SelectStrategy } from "./select-strategy.js";
 import { getHint } from "./hint.js";
 import { CorrectionStrategy } from "./correction-strategy.js";
 import { printResults } from "./results.js";
-import { Messager } from "./messager.js";
+import { Messenger } from "./messenger.js";
 
 /**
  * Cli Learning cards main process.
@@ -23,7 +23,7 @@ export class CliLearningCards {
   private readonly today = new Date();
   private readonly selectStrategy = new SelectStrategy();
   private readonly correctionStrategy = new CorrectionStrategy();
-  private readonly msg = new Messager();
+  private readonly msg = new Messenger();
   private readonly sourcePath: URL;
   private cardsLimit = 0;
   private sourceJson?: SourceJson;

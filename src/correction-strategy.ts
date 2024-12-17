@@ -1,7 +1,7 @@
 import type { Item } from "./source-json.js";
 import trim from "lodash/trim.js";
 import lowerFirst from "lodash/lowerFirst.js";
-import { lightMessager as lmsg } from "./messager.js";
+import { lightMessenger as lmsg } from "./messenger.js";
 
 /**
  * Select a strategy for the comparison between the expected answer, and

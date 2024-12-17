@@ -1,5 +1,5 @@
 import type { Item } from "./source-json.js";
-import { lightMessager as lmsg } from "./messager.js";
+import { lightMessenger as lmsg } from "./messenger.js";
 
 /**
  * Prints a summary of results.
