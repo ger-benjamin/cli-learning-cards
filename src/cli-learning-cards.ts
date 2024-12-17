@@ -24,6 +24,7 @@ export class CliLearningCards {
   private sourceJson?: SourceJson;
   private selectedItems: Item[] = [];
   private questionIndex = 0;
+  private readonly today = new Date();
 
   constructor(sourcePath: URL) {
     this.sourcePath = sourcePath;
@@ -104,6 +105,7 @@ export class CliLearningCards {
   private async processItems() {
     while (this.questionIndex < this.cardsLimit) {
       const item = this.selectedItems[this.questionIndex]!;
+      item.error_count = 0;
       await this.processQuestion(item);
       this.questionIndex++;
     }
@@ -113,7 +115,6 @@ export class CliLearningCards {
   //   __skip ? Update date and "next"
   //   correct ? Update date  "score" and next
   private async processQuestion(item: Item, clue = false) {
-    // TODO update error count to 0
     const question = `${item.source_key_text}`;
     const clueText = clue ? this.getClueText(item) : "";
     const answer = await this.ask(`${question} ${clueText}\n`);
@@ -131,11 +132,12 @@ export class CliLearningCards {
     }
     const valid = this.isCorrect(item, answer);
     if (!valid) {
-      // TODO update errorCount
+      item.error_count++;
       await this.processQuestion(item, clue);
       return;
     }
-    // TODO update date and show happiness
+    item.last_revision = this.today;
+    console.log(`Correct :-)\n`);
     return;
   }
 
@@ -167,7 +169,25 @@ export class CliLearningCards {
   // case > nb of item
   // show correct and not correct
   private showResults() {
-    console.log("Show results to implement");
+    const mastered = this.selectedItems.filter(
+      (item) => item.error_count === 0,
+    );
+    const toRevise = this.selectedItems.filter(
+      (item) => item.error_count !== 0,
+    );
+    console.log("Results:");
+    if (mastered.length) {
+      console.log("Perfectly known:");
+      mastered.forEach((item) => {
+        console.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
+      });
+    }
+    if (toRevise.length) {
+      console.log("To revise again:");
+      toRevise.forEach((item) => {
+        console.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
+      });
+    }
   }
 
   // show result and save y/n
