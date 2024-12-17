@@ -2,6 +2,7 @@ import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
+import {trim, lowerFirst} from "lodash";
 
 /**
  * Cli Learning cards main process.
@@ -140,17 +141,26 @@ export class CliLearningCards {
   }
 
   private getClueText(item: Item): string {
-    // TODO is rough
-    const letters = item.source_value_text.split("");
-    letters.sort();
-    return `(${letters.join("")})`;
+    const clue: string[] = [];
+    const words = item.source_value_text.split(" ");
+    words.forEach((word) => {
+      const letters = word.split("").sort();
+      clue.push(...letters);
+      clue.push(" ");
+    });
+    clue.pop();
+    return `(${clue.join("")})`;
   }
 
   // Correctness strategy
   //    Simple Az===Az
   //    more complicated ? with https://www.npmjs.com/package/fast-diff
   private isCorrect(item: Item, answer: string): boolean {
-    return item.source_value_text === answer;
+    const source = item.source_value_text;
+    const modifiedSource = trim(lowerFirst(source));
+    const modifiedAnswer = trim(lowerFirst(answer));
+    console.log("Debug: ", modifiedSource, modifiedAnswer);
+    return modifiedSource === modifiedAnswer;
   }
 
   // case > nb of item
