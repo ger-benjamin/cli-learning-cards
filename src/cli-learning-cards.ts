@@ -2,7 +2,8 @@ import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
-import {trim, lowerFirst} from "lodash";
+import lowerFirst from "lodash/lowerFirst.js";
+import trim from "lodash/trim.js";
 
 /**
  * Cli Learning cards main process.
@@ -41,8 +42,8 @@ export class CliLearningCards {
     await this.askNumberCards();
     this.selectItems();
     await this.processItems();
-    this.showResult();
-    this.saveResult();
+    this.showResults();
+    this.saveResults();
     this.stop();
   }
 
@@ -101,13 +102,11 @@ export class CliLearningCards {
   }
 
   private async processItems() {
-    if (this.questionIndex >= this.cardsLimit) {
-      return;
+    while (this.questionIndex < this.cardsLimit) {
+      const item = this.selectedItems[this.questionIndex]!;
+      await this.processQuestion(item);
+      this.questionIndex++;
     }
-    const item = this.selectedItems[this.questionIndex]!;
-    await this.processQuestion(item);
-    this.questionIndex++;
-    await this.processItems();
   }
 
   // Show question
@@ -157,6 +156,8 @@ export class CliLearningCards {
   //    more complicated ? with https://www.npmjs.com/package/fast-diff
   private isCorrect(item: Item, answer: string): boolean {
     const source = item.source_value_text;
+    // move to another "clean" function
+    // Remove also last point, colon, etc.
     const modifiedSource = trim(lowerFirst(source));
     const modifiedAnswer = trim(lowerFirst(answer));
     console.log("Debug: ", modifiedSource, modifiedAnswer);
@@ -165,14 +166,14 @@ export class CliLearningCards {
 
   // case > nb of item
   // show correct and not correct
-  private showResult() {
-    console.log("to implement");
+  private showResults() {
+    console.log("Show results to implement");
   }
 
   // show result and save y/n
   // Update file on yes
-  private saveResult() {
-    console.log("to implement");
+  private saveResults() {
+    console.log("Save results to implement");
   }
 
   private async ask(text: string): Promise<string> {
