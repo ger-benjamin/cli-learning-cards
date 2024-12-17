@@ -1,9 +1,10 @@
-import * as readline from "node:readline/promises";
-import { stdin, stdout } from "node:process";
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
-import lowerFirst from "lodash/lowerFirst.js";
-import trim from "lodash/trim.js";
+import { SelectStrategy } from "./select-strategy.js";
+import { getHint } from "./hint.js";
+import { CorrectionStrategy } from "./correction-strategy.js";
+import { printResults } from "./results.js";
+import { Messager } from "./messager.js";
 
 /**
  * Cli Learning cards main process.
@@ -19,13 +20,15 @@ import trim from "lodash/trim.js";
  * Add a "reverse game" possibility, or random order, time, challenge....
  */
 export class CliLearningCards {
-  private rl?: readline.Interface;
-  private cardsLimit = 0;
+  private readonly today = new Date();
+  private readonly selectStrategy = new SelectStrategy();
+  private readonly correctionStrategy = new CorrectionStrategy();
+  private readonly msg = new Messager();
   private readonly sourcePath: URL;
+  private cardsLimit = 0;
   private sourceJson?: SourceJson;
   private selectedItems: Item[] = [];
   private questionIndex = 0;
-  private readonly today = new Date();
 
   constructor(sourcePath: URL) {
     this.sourcePath = sourcePath;
@@ -35,16 +38,16 @@ export class CliLearningCards {
    * Start the read-line stram and the questions processes.
    */
   async run() {
-    this.rl = readline.createInterface({ input: stdin, output: stdout });
+    this.msg.init();
     await this.readJsonSource();
     if (!this.sourceJson || !this.sourceJson.items) {
-      console.error("Can not use source json file.");
+      this.msg.error("Can not use source json file.");
       this.stop();
     }
     await this.askNumberCards();
     this.selectItems();
     await this.processItems();
-    this.showResults();
+    printResults(this.selectedItems);
     this.saveResults();
     this.stop();
   }
@@ -53,7 +56,7 @@ export class CliLearningCards {
    * Close the read-line stream.
    */
   stop() {
-    this.rl?.close();
+    this.msg.stop();
   }
 
   /**
@@ -76,8 +79,8 @@ export class CliLearningCards {
   private async askNumberCards() {
     const defaultNb = 10;
     const max = this.sourceJson?.items?.length ?? -1;
-    const answer = await this.ask(
-      `How many cards do you want to train? (default ${defaultNb}, max ${max})\n`,
+    const answer = await this.msg.ask(
+      `How many cards do you want to train? (default ${defaultNb}, max ${max})`,
     );
     if (answer === "") {
       this.cardsLimit = defaultNb;
@@ -85,7 +88,7 @@ export class CliLearningCards {
     }
     const cardsLimit = parseInt(answer);
     if (cardsLimit < 0 || cardsLimit > max) {
-      console.log(`Please write a valid natural number between 0 and ${max}`);
+      this.msg.log(`Please write a valid natural number between 0 and ${max}`);
       await this.askNumberCards();
       return;
     }
@@ -93,14 +96,15 @@ export class CliLearningCards {
   }
 
   /**
-   * Get a random item via a strategy.
+   * Get random items via a strategy.
    * @private
    */
   private selectItems() {
     const items = [...(this.sourceJson?.items ?? [])];
-    // Default strategy is by last revision date.
-    items.sort((item1, item2) => +item1.last_revision - +item2.last_revision);
-    this.selectedItems = items.slice(0, this.cardsLimit);
+    this.selectedItems = this.selectStrategy.selectItems(
+      items,
+      this.cardsLimit,
+    );
   }
 
   /**
@@ -120,111 +124,39 @@ export class CliLearningCards {
    * Show question and check answer.
    * Process is locked until the right answer is given.
    * Update date and error count in the question.
-   * On "__clue", it shows additional clue.
+   * On "__hint", it shows additional hint.
    * On "__skip", it leaves the question.
    * @private
    */
-  private async processQuestion(item: Item, clue = false) {
+  private async processQuestion(item: Item, hint = false) {
     const question = `${item.source_key_text}`;
-    const clueText = clue ? this.getClueText(item) : "";
-    const answer = await this.ask(`${question} ${clueText}\n`);
+    const hintText = hint ? getHint(item) : "";
+    const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
       await this.processQuestion(item);
       return;
     }
     if (answer === "__skip") {
-      console.log(`=> ${item.source_value_text}\n`);
+      this.msg.log(`=> ${item.source_value_text}\n`);
       return;
     }
-    if (answer === "__clue") {
+    if (answer === "__hint") {
       await this.processQuestion(item, true);
       return;
     }
-    const valid = this.isCorrect(item, answer);
+    const valid = this.correctionStrategy.isCorrect(item, answer);
     if (!valid) {
       item.error_count++;
-      await this.processQuestion(item, clue);
+      await this.processQuestion(item, hint);
       return;
     }
     item.last_revision = this.today;
-    console.log(`Correct :-)\n`);
+    this.msg.log(`Correct :-)\n`);
     return;
-  }
-
-  /**
-   * @returns A clue based on the item.
-   * @private
-   */
-  private getClueText(item: Item): string {
-    const clue: string[] = [];
-    const words = item.source_value_text.split(" ");
-    words.forEach((word) => {
-      const letters = word.split("").sort();
-      clue.push(...letters);
-      clue.push(" ");
-    });
-    clue.pop();
-    return `(${clue.join("")})`;
-  }
-
-  /**
-   * Compares the item and the answer to check if the answer is correct.
-   * The current strategy is simple (aZ === AZ).
-   * @returns true if the answer is correct, false otherwise.
-   * @private
-   */
-  private isCorrect(item: Item, answer: string): boolean {
-    const source = item.source_value_text;
-    // move to another "clean" function
-    // Remove also last point, colon, etc.
-    const modifiedSource = trim(lowerFirst(source));
-    const modifiedAnswer = trim(lowerFirst(answer));
-    console.log("Debug: ", modifiedSource, modifiedAnswer);
-    // more complicated ? with https://www.npmjs.com/package/fast-diff
-    return modifiedSource === modifiedAnswer;
-  }
-
-  /**
-   * Prints a summary of results.
-   * @private
-   */
-  private showResults() {
-    const mastered = this.selectedItems.filter(
-      (item) => item.error_count === 0,
-    );
-    const toRevise = this.selectedItems.filter(
-      (item) => item.error_count !== 0,
-    );
-    console.log("Results:");
-    if (mastered.length) {
-      console.log("Perfectly known:");
-      mastered.forEach((item) => {
-        console.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
-      });
-    }
-    if (toRevise.length) {
-      console.log("To revise again:");
-      toRevise.forEach((item) => {
-        console.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
-      });
-    }
   }
 
   // Ask to save result (update source!)
   private saveResults() {
-    console.log("Save results to implement");
-  }
-
-  /**
-   * Prompt a question and wait on user's input.
-   * @param text the question to ask.
-   * @returns A promise with the answer.
-   * @private
-   */
-  private async ask(text: string): Promise<string> {
-    if (!this.rl) {
-      return "";
-    }
-    return await this.rl.question(text);
+    this.msg.log("Save results to implement");
   }
 }
