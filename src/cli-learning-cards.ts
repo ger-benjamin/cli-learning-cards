@@ -12,10 +12,11 @@ import trim from "lodash/trim.js";
  *
  * TODO and ideas
  * Finish first process implementation.
- * Add a "__skip", "__clue", "__favorite" special arguments
+ * Add "__favorite" special arguments
  * Add a possibility to add "cards" on demand/from time to time
  * Add a possibility to select the "select card" strategy.
- * Add a "reverse game" possibility, or random order.
+ * Add colors.
+ * Add a "reverse game" possibility, or random order, time, challenge....
  */
 export class CliLearningCards {
   private rl?: readline.Interface;
@@ -102,6 +103,10 @@ export class CliLearningCards {
     this.selectedItems = items.slice(0, this.cardsLimit);
   }
 
+  /**
+   * Loop on question to ask.
+   * @private
+   */
   private async processItems() {
     while (this.questionIndex < this.cardsLimit) {
       const item = this.selectedItems[this.questionIndex]!;
@@ -111,9 +116,14 @@ export class CliLearningCards {
     }
   }
 
-  // Show question
-  //   __skip ? Update date and "next"
-  //   correct ? Update date  "score" and next
+  /**
+   * Show question and check answer.
+   * Process is locked until the right answer is given.
+   * Update date and error count in the question.
+   * On "__clue", it shows additional clue.
+   * On "__skip", it leaves the question.
+   * @private
+   */
   private async processQuestion(item: Item, clue = false) {
     const question = `${item.source_key_text}`;
     const clueText = clue ? this.getClueText(item) : "";
@@ -141,6 +151,10 @@ export class CliLearningCards {
     return;
   }
 
+  /**
+   * @returns A clue based on the item.
+   * @private
+   */
   private getClueText(item: Item): string {
     const clue: string[] = [];
     const words = item.source_value_text.split(" ");
@@ -153,9 +167,12 @@ export class CliLearningCards {
     return `(${clue.join("")})`;
   }
 
-  // Correctness strategy
-  //    Simple Az===Az
-  //    more complicated ? with https://www.npmjs.com/package/fast-diff
+  /**
+   * Compares the item and the answer to check if the answer is correct.
+   * The current strategy is simple (aZ === AZ).
+   * @returns true if the answer is correct, false otherwise.
+   * @private
+   */
   private isCorrect(item: Item, answer: string): boolean {
     const source = item.source_value_text;
     // move to another "clean" function
@@ -163,11 +180,14 @@ export class CliLearningCards {
     const modifiedSource = trim(lowerFirst(source));
     const modifiedAnswer = trim(lowerFirst(answer));
     console.log("Debug: ", modifiedSource, modifiedAnswer);
+    // more complicated ? with https://www.npmjs.com/package/fast-diff
     return modifiedSource === modifiedAnswer;
   }
 
-  // case > nb of item
-  // show correct and not correct
+  /**
+   * Prints a summary of results.
+   * @private
+   */
   private showResults() {
     const mastered = this.selectedItems.filter(
       (item) => item.error_count === 0,
@@ -190,12 +210,17 @@ export class CliLearningCards {
     }
   }
 
-  // show result and save y/n
-  // Update file on yes
+  // Ask to save result (update source!)
   private saveResults() {
     console.log("Save results to implement");
   }
 
+  /**
+   * Prompt a question and wait on user's input.
+   * @param text the question to ask.
+   * @returns A promise with the answer.
+   * @private
+   */
   private async ask(text: string): Promise<string> {
     if (!this.rl) {
       return "";
