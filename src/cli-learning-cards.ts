@@ -5,23 +5,15 @@ import { getHint } from "./hint.js";
 import { CorrectionStrategy } from "./correction-strategy.js";
 import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
+import { writeFileSync } from "node:fs";
 
 /**
  * Cli Learning cards main process.
  * Read source, ask number of element to revise, prompt
  * card and handle answers.
- *
- * TODO and ideas
- * Finish first process implementation.
- * Add "__favorite" special arguments
- * Add "__end" special arguments to quite quicker (and save).
- * Add maybe a possibility to add "cards" on demand/from time to time
- * Add a possibility to select the "select card" strategy.
- * Add colors.
- * Add a "reverse game" possibility, or random order, time, challenge....
  */
 export class CliLearningCards {
-  private readonly today = new Date();
+  private readonly now = new Date();
   private readonly selectStrategy = new SelectStrategy();
   private readonly correctionStrategy = new CorrectionStrategy();
   private readonly msg = new Messenger();
@@ -49,7 +41,7 @@ export class CliLearningCards {
     this.selectItems();
     await this.processItems();
     printResults(this.selectedItems);
-    this.saveResults();
+    await this.saveResults();
     this.stop();
   }
 
@@ -151,13 +143,38 @@ export class CliLearningCards {
       await this.processQuestion(item, hint);
       return;
     }
-    item.last_revision = this.today;
+    item.revision_count++;
+    item.last_revision = this.now;
     this.msg.log(`Correct :-)\n`);
     return;
   }
 
-  // Ask to save result (update source!)
-  private saveResults() {
-    this.msg.log("Save results to implement");
+  /**
+   * Update source file with results.
+   * @private
+   */
+  private async saveResults() {
+    const answer = await this.msg.ask("Do you want to save the results?");
+    if (!["yes", "y", "1", "true", "t"].includes(answer.toLowerCase())) {
+      this.msg.log("No results saved.");
+      this.msg.log("Bye o/");
+      return;
+    }
+    const revisedItemsIds = this.selectedItems.map((item) => item.id);
+    const notRevisedItems =
+      this.sourceJson?.items.filter(
+        (item) => !revisedItemsIds.includes(item.id),
+      ) ?? [];
+    const newItems = [...this.selectedItems, ...notRevisedItems];
+    writeFileSync(
+      this.sourcePath,
+      JSON.stringify({ items: newItems }, null, 2),
+      {
+        encoding: "utf-8",
+        flag: "w", // Create or replace
+      },
+    );
+    this.msg.log("Results saved!");
+    this.msg.log("Bye o/");
   }
 }

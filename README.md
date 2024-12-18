@@ -43,3 +43,16 @@ Add a `source.json` file with this structure in the `data` folder:
 ```bash
 npm start
 ```
+
+## Ideas
+ * Improve correction check.
+ * Add "__end" special arguments to quite quicker (and save).
+ * Add a possibility to save answer as "variation" on demand.
+ * Add "__favorite" special arguments.
+ * Add colors.
+ * Add a possibility to select the "select card" strategy.
+ * Add a "reverse game" possibility, or random order, time, challenge....
+ * Release and run it without compiling it.
+ * Move to deno ?
+ * Add a json schema and validate source.
+ * Add import source script.
