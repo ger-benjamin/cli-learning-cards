@@ -14,13 +14,19 @@ npm run build
 Add a `source.json` file with this structure in the `data` folder:
 
 ```json
-{ 
+{
   "items": [
     {
-      "source_key_text": "Tree",
-      "source_value_text": "Arbre",
+      "id": "The money",
       "cards": {
-        "Tree": "Arbre"
+        "front": {
+          "key": "The Money",
+          "variations": ["The currency", "The cash"]
+        },
+        "back": {
+          "key": "L'argent",
+          "variations": ["La devise", "Les liquidités"]
+        }
       },
       "last_revision": "2024-12-16T13:33:45.609Z",
       "revision_count": 0,

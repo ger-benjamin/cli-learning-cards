@@ -1,9 +1,16 @@
-export type Cards = Record<string, string>;
+export interface Side {
+  key: string;
+  variations: string[];
+}
+
+export interface Card {
+  front: Side;
+  back: Side;
+}
 
 export interface Item {
-  source_key_text: string;
-  source_value_text: string;
-  cards: Cards;
+  id: string;
+  card: Card;
   last_revision: Date;
   revision_count: number;
   favorite_lvl: number;

@@ -28,11 +28,11 @@ export class CorrectionStrategy {
    * @private
    */
   private checkSimple(item: Item, answer: string): boolean {
-    const source = item.source_value_text;
+    const expected = item.card.back.key;
     // Remove also last point, colon, etc.
-    const modifiedSource = trim(lowerFirst(source));
+    const modifiedExpected = trim(lowerFirst(expected));
     const modifiedAnswer = trim(lowerFirst(answer));
-    lmsg.debug(`src: ${modifiedSource} - asw: ${modifiedAnswer}`);
-    return modifiedSource === modifiedAnswer;
+    lmsg.debug(`src: ${modifiedExpected} - asw: ${modifiedAnswer}`);
+    return modifiedExpected === modifiedAnswer;
   }
 }

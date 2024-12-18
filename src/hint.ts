@@ -5,7 +5,7 @@ import type { Item } from "./source-json.js";
  */
 export const getHint = (item: Item): string => {
   const hint: string[] = [];
-  const words = item.source_value_text.split(" ");
+  const words = item.card.back.key.split(" ");
   words.forEach((word) => {
     const letters = word.split("").sort();
     hint.push(...letters);

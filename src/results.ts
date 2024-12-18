@@ -12,13 +12,13 @@ export const printResults = (items: Item[]) => {
   if (mastered.length) {
     lmsg.log("Perfectly known:");
     mastered.forEach((item) => {
-      lmsg.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
+      lmsg.log(`- ${item.card.front.key} => ${item.card.back.key}\n`);
     });
   }
   if (toRevise.length) {
     lmsg.log("To revise again:");
     toRevise.forEach((item) => {
-      lmsg.log(`- ${item.source_key_text} => ${item.source_value_text}\n`);
+      lmsg.log(`- ${item.card.front.key} => ${item.card.back.key}\n`);
     });
   }
 };

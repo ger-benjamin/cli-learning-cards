@@ -14,7 +14,8 @@ import { Messenger } from "./messenger.js";
  * TODO and ideas
  * Finish first process implementation.
  * Add "__favorite" special arguments
- * Add a possibility to add "cards" on demand/from time to time
+ * Add "__end" special arguments to quite quicker (and save).
+ * Add maybe a possibility to add "cards" on demand/from time to time
  * Add a possibility to select the "select card" strategy.
  * Add colors.
  * Add a "reverse game" possibility, or random order, time, challenge....
@@ -129,7 +130,7 @@ export class CliLearningCards {
    * @private
    */
   private async processQuestion(item: Item, hint = false) {
-    const question = `${item.source_key_text}`;
+    const question = `${item.id}`;
     const hintText = hint ? getHint(item) : "";
     const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
@@ -137,7 +138,7 @@ export class CliLearningCards {
       return;
     }
     if (answer === "__skip") {
-      this.msg.log(`=> ${item.source_value_text}\n`);
+      this.msg.log(`=> ${item.card.front.key}\n`);
       return;
     }
     if (answer === "__hint") {
