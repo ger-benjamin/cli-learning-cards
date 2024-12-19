@@ -51,7 +51,7 @@ npm start
  * Add "__favorite" special arguments.
  * Add colors.
  * Add a possibility to select the "select card" strategy.
- * Add a "reverse game" possibility, or random order, time, challenge....
+ * Add more choice, random order, time, challenge....
  * Release and run it without compiling it.
  * Move to deno ?
  * Add a json schema and validate source.

@@ -6,6 +6,7 @@ import { CorrectionStrategy } from "./correction-strategy.js";
 import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
 import { writeFileSync } from "node:fs";
+import gs from "./game-state.js";
 
 /**
  * Cli Learning cards main process.
@@ -39,6 +40,7 @@ export class CliLearningCards {
     }
     await this.askNumberCards();
     this.selectItems();
+    gs.setQuestionIsFront(Math.random() > 0.5);
     await this.processItems();
     printResults(this.selectedItems);
     await this.saveResults();
@@ -122,7 +124,7 @@ export class CliLearningCards {
    * @private
    */
   private async processQuestion(item: Item, hint = false) {
-    const question = `${item.id}`;
+    const question = gs.getQuestion(item).key;
     const hintText = hint ? getHint(item) : "";
     const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
@@ -130,7 +132,7 @@ export class CliLearningCards {
       return;
     }
     if (answer === "__skip") {
-      this.msg.log(`=> ${item.card.front.key}\n`);
+      this.msg.log(`=> ${gs.getAnswer(item)}\n`);
       return;
     }
     if (answer === "__hint") {

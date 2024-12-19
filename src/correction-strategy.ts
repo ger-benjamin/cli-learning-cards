@@ -2,6 +2,7 @@ import type { Item } from "./source-json.js";
 import trim from "lodash/trim.js";
 import lowerFirst from "lodash/lowerFirst.js";
 import { lightMessenger as lmsg } from "./messenger.js";
+import gs from "./game-state.js";
 
 /**
  * Select a strategy for the comparison between the expected answer, and
@@ -28,7 +29,7 @@ export class CorrectionStrategy {
    * @private
    */
   private checkSimple(item: Item, answer: string): boolean {
-    const expected = item.card.back.key;
+    const expected = gs.getAnswer(item).key;
     // Remove also last point, colon, etc.
     const modifiedExpected = trim(lowerFirst(expected));
     const modifiedAnswer = trim(lowerFirst(answer));
