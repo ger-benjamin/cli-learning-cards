@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
-import { SelectStrategy } from "./select-strategy.js";
+import { SelectionStrategy } from "./selection-strategy.js";
 import { getHint } from "./hint.js";
 import { CorrectionStrategy } from "./correction-strategy.js";
 import { printResults } from "./results.js";
@@ -15,7 +15,7 @@ import gs from "./game-state.js";
  */
 export class CliLearningCards {
   private readonly now = new Date();
-  private readonly selectStrategy = new SelectStrategy();
+  private readonly selectionStrategy = new SelectionStrategy();
   private readonly correctionStrategy = new CorrectionStrategy();
   private readonly msg = new Messenger();
   private readonly sourcePath: URL;
@@ -96,7 +96,7 @@ export class CliLearningCards {
    */
   private selectItems() {
     const items = [...(this.sourceJson?.items ?? [])];
-    this.selectedItems = this.selectStrategy.selectItems(
+    this.selectedItems = this.selectionStrategy.selectItems(
       items,
       this.cardsLimit,
     );

@@ -1,7 +1,9 @@
 import type { Item } from "./source-json.js";
 import shuffle from "lodash/shuffle.js";
+import gs from "./game-state.js";
 
-export enum Strategies {
+/** Possible selection strategies. */
+export enum SelectionStrategies {
   Date = "date",
   Random = "random",
 }
@@ -9,9 +11,7 @@ export enum Strategies {
 /**
  * Get random items via a strategy.
  */
-export class SelectStrategy {
-  private strategy: string = Strategies.Random;
-
+export class SelectionStrategy {
   constructor() {}
 
   /**
@@ -19,7 +19,7 @@ export class SelectStrategy {
    * @returns a list of items.
    */
   selectItems(items: Item[], howMany: number): Item[] {
-    if (this.strategy === Strategies.Random) {
+    if (gs.getSelectionStrategy() === SelectionStrategies.Random) {
       return this.selectRandomItems(items, howMany);
     }
     return this.selectItemsByDate([...items], howMany);

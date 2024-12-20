@@ -4,6 +4,11 @@ import lowerFirst from "lodash/lowerFirst.js";
 import { lightMessenger as lmsg } from "./messenger.js";
 import gs from "./game-state.js";
 
+/** Possible Correction strategies. */
+export enum CorrectionStrategies {
+  Simple = "simple",
+}
+
 /**
  * Select a strategy for the comparison between the expected answer, and
  * the actual answer.
