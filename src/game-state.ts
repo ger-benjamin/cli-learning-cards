@@ -8,11 +8,13 @@ import { CorrectionStrategies } from "./correction-strategy.js";
  */
 class GameState {
   private questionIsFront: boolean = true;
-  private selectionStrategy: SelectionStrategies = SelectionStrategies.Date;
-  private correctionStrategy: CorrectionStrategies =
-    CorrectionStrategies.Simple;
+  private selectionStrategy: SelectionStrategies;
+  private correctionStrategy: CorrectionStrategies;
 
-  constructor() {}
+  constructor() {
+    this.selectionStrategy = "random" as SelectionStrategies;
+    this.correctionStrategy = "Simple" as CorrectionStrategies;
+  }
 
   getSelectionStrategy(): SelectionStrategies {
     return this.selectionStrategy;

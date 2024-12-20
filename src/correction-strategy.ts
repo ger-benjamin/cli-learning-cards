@@ -1,11 +1,10 @@
 import type { Item } from "./source-json.js";
-import trim from "lodash/trim.js";
 import lowerFirst from "lodash/lowerFirst.js";
 import { lightMessenger as lmsg } from "./messenger.js";
 import gs from "./game-state.js";
 
 /** Possible Correction strategies. */
-export enum CorrectionStrategies {
+export const enum CorrectionStrategies {
   Simple = "simple",
 }
 
@@ -36,9 +35,23 @@ export class CorrectionStrategy {
   private checkSimple(item: Item, answer: string): boolean {
     const expected = gs.getAnswer(item).key;
     // Remove also last point, colon, etc.
-    const modifiedExpected = trim(lowerFirst(expected));
-    const modifiedAnswer = trim(lowerFirst(answer));
+    const modifiedExpected = this.sanitize(expected);
+    const modifiedAnswer = this.sanitize(answer);
     lmsg.debug(`src: ${modifiedExpected} - asw: ${modifiedAnswer}`);
     return modifiedExpected === modifiedAnswer;
+  }
+
+  /**
+   * Remove not alphanumerical characters until the first one and
+   * after the last one. Lower case the first alphabetical character.
+   * @returns the sanitized text.
+   * @private
+   */
+  private sanitize(text: string) {
+    const cleanedStartAndEnd = text.replace(
+      /^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g,
+      "",
+    );
+    return lowerFirst(cleanedStartAndEnd);
   }
 }
