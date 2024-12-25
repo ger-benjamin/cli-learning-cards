@@ -22,6 +22,7 @@ const generateTestItem = (index: number): Item => {
     last_revision: now,
     revision_count: 0,
     favorite_lvl: 0,
-    error_count: 0,
+    errors_last: 0,
+    errors_total: 0,
   };
 };

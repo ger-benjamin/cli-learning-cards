@@ -6,8 +6,8 @@ import gs from "./game-state.js";
  * Prints a summary of results.
  */
 export const printResults = (items: Item[]) => {
-  const mastered = items.filter((item) => item.error_count === 0);
-  const toRevise = items.filter((item) => item.error_count !== 0);
+  const mastered = items.filter((item) => item.errors_last === 0);
+  const toRevise = items.filter((item) => item.errors_last !== 0);
   lmsg.showSeparation();
   lmsg.log("Results:");
   if (mastered.length) {

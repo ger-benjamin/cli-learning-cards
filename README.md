@@ -31,7 +31,8 @@ Add a `source.json` file with this structure in the `data` folder:
       "last_revision": "2024-12-16T13:33:45.609Z",
       "revision_count": 0,
       "favorite_lvl": 0,
-      "error_count": 0
+      "errors_last": 0,
+      "errors_total": 0
     }
   ]
 }

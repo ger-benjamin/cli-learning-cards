@@ -109,7 +109,7 @@ export class CliLearningCards {
   private async processItems() {
     while (this.questionIndex < this.cardsLimit) {
       const item = this.selectedItems[this.questionIndex]!;
-      item.error_count = 0;
+      item.errors_last = 0;
       await this.processQuestion(item);
       this.questionIndex++;
     }
@@ -141,7 +141,8 @@ export class CliLearningCards {
     }
     const valid = this.correctionStrategy.isCorrect(item, answer);
     if (!valid) {
-      item.error_count++;
+      item.errors_total++;
+      item.errors_last++;
       await this.processQuestion(item, hint);
       return;
     }

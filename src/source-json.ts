@@ -14,7 +14,8 @@ export interface Item {
   last_revision: Date;
   revision_count: number;
   favorite_lvl: number;
-  error_count: number;
+  errors_last: number;
+  errors_total: number;
 }
 
 export interface SourceJson {
