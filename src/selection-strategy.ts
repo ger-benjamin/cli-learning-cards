@@ -31,7 +31,7 @@ export class SelectionStrategy {
    * @private
    */
   private selectItemsByDate(items: Item[], howMany: number) {
-    items.sort((item1, item2) => +item2.last_revision - +item1.last_revision);
+    items.sort((item1, item2) => +item1.last_revision - +item2.last_revision);
     return items.slice(0, howMany);
   }
 

@@ -7,6 +7,7 @@ import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
 import { writeFileSync } from "node:fs";
 import gs from "./game-state.js";
+import { parseItemDate } from "./utils.js";
 
 /**
  * Cli Learning cards main process.
@@ -62,6 +63,10 @@ export class CliLearningCards {
     try {
       const contents = await readFile(this.sourcePath, { encoding: "utf8" });
       this.sourceJson = JSON.parse(contents);
+      this.sourceJson?.items.forEach(
+        (item) =>
+          (item.last_revision = parseItemDate(item.id, item.last_revision)),
+      );
     } catch (err) {
       console.error((err as Error).message);
     }

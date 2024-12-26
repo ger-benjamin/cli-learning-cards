@@ -46,7 +46,6 @@ npm start
 ```
 
 ## Ideas
- * Improve correction check.
  * Add "__end" special arguments to quite quicker (and save).
  * Add a possibility to save answer as "variation" on demand.
  * Add "__favorite" special arguments.

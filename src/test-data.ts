@@ -1,9 +1,9 @@
 import type { Item } from "./source-json.js";
 
-const now = new Date();
-
 export const generateTestItems = (howMany: number): Item[] => {
-  return Array.from([howMany]).map((index) => generateTestItem(index));
+  return Array(howMany)
+    .fill(null)
+    .map((_, index) => generateTestItem(index));
 };
 
 const generateTestItem = (index: number): Item => {
@@ -19,7 +19,7 @@ const generateTestItem = (index: number): Item => {
         variations: [`front-back1-${index}`],
       },
     },
-    last_revision: now,
+    last_revision: new Date(),
     revision_count: 0,
     favorite_lvl: 0,
     errors_last: 0,
