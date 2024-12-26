@@ -43,6 +43,10 @@ export class CliLearningCards {
     this.selectItems();
     gs.setQuestionIsFront(Math.random() > 0.5);
     await this.processItems();
+    if (!gs.getAnswers().length) {
+      this.stop();
+      return;
+    }
     printResults(this.selectedItems);
     await this.saveResults();
     this.stop();
@@ -111,12 +115,15 @@ export class CliLearningCards {
    * Loop on question to ask.
    * @private
    */
-  private async processItems() {
+  private async processItems(): Promise<void> {
     while (this.questionIndex < this.cardsLimit) {
       const item = this.selectedItems[this.questionIndex]!;
       item.errors_last = 0;
       await this.processQuestion(item);
       this.questionIndex++;
+      if (gs.isGameStopped()) {
+        this.questionIndex = Infinity;
+      }
     }
   }
 
@@ -124,26 +131,41 @@ export class CliLearningCards {
    * Show question and check answer.
    * Process is locked until the right answer is given.
    * Update date and error count in the question.
-   * On "__hint", it shows additional hint.
-   * On "__skip", it leaves the question.
+   * On "_hint", it shows additional hint.
+   * On "_skip", it leaves the question.
+   * On "_exit", quit earlier the questions process.
    * @private
    */
-  private async processQuestion(item: Item, hint = false) {
-    const question = gs.getQuestion(item).key;
+  private async processQuestion(item: Item, hint = false): Promise<void> {
+    const question = gs.getSideA(item).key;
     const hintText = hint ? getHint(item) : "";
     const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
-      await this.processQuestion(item);
+      await this.processQuestion(item, hint);
       return;
     }
-    if (answer === "__skip") {
-      this.msg.log(`=> ${gs.getAnswer(item)}\n`);
+    if (answer === "_exit") {
+      gs.stopGame();
       return;
     }
-    if (answer === "__hint") {
+    if (answer === "_skip") {
+      this.msg.log(`=> ${gs.getSideB(item)}\n`);
+      return;
+    }
+    if (answer === "_hint") {
       await this.processQuestion(item, true);
       return;
     }
+    if (answer[0] === "_") {
+      this.msg.log(`This command is not valid.\n`);
+      await this.processQuestion(item, hint);
+      return;
+    }
+    gs.addAnswers({
+      answer,
+      question,
+      id: item.id,
+    });
     const valid = this.correctionStrategy.isCorrect(item, answer);
     if (!valid) {
       item.errors_total++;

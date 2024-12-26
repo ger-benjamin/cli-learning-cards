@@ -6,7 +6,7 @@ import gs from "./game-state.js";
  */
 export const getHint = (item: Item): string => {
   const hint: string[] = [];
-  const words = gs.getAnswer(item).key.split(" ");
+  const words = gs.getSideB(item).key.split(" ");
   words.forEach((word) => {
     const letters = word.split("").sort();
     hint.push(...letters);

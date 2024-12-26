@@ -46,9 +46,8 @@ npm start
 ```
 
 ## Ideas
- * Add "__end" special arguments to quite quicker (and save).
  * Add a possibility to save answer as "variation" on demand.
- * Add "__favorite" special arguments.
+ * Add "_favorite" special arguments.
  * Add colors.
  * Add a possibility to select the "select card" strategy.
  * Add more choice, random order, time, challenge....

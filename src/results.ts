@@ -13,13 +13,13 @@ export const printResults = (items: Item[]) => {
   if (mastered.length) {
     lmsg.log("Perfectly known:");
     mastered.forEach((item) => {
-      lmsg.log(`- ${gs.getQuestion(item).key} => ${gs.getAnswer(item).key}\n`);
+      lmsg.log(`- ${gs.getSideA(item).key} => ${gs.getSideB(item).key}\n`);
     });
   }
   if (toRevise.length) {
     lmsg.log("To revise again:");
     toRevise.forEach((item) => {
-      lmsg.log(`- ${gs.getQuestion(item).key} => ${gs.getAnswer(item).key}\n`);
+      lmsg.log(`- ${gs.getSideA(item).key} => ${gs.getSideB(item).key}\n`);
     });
   }
 };

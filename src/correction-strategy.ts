@@ -33,7 +33,7 @@ export class CorrectionStrategy {
    * @private
    */
   private checkSimple(item: Item, answer: string): boolean {
-    const expected = gs.getAnswer(item).key;
+    const expected = gs.getSideB(item).key;
     // Remove also last point, colon, etc.
     const modifiedExpected = this.sanitize(expected);
     const modifiedAnswer = this.sanitize(answer);
