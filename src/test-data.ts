@@ -11,15 +11,16 @@ const generateTestItem = (index: number): Item => {
     id: `${index}`,
     card: {
       front: {
-        key: `front-${index}`,
+        main: `front-${index}`,
         variations: [`front-var1-${index}`],
       },
       back: {
-        key: `back-${index}`,
+        main: `back-${index}`,
         variations: [`front-back1-${index}`],
       },
     },
     last_revision: new Date(),
+    categories: ["cat1"],
     revision_count: 0,
     favorite_lvl: 0,
     errors_last: 0,

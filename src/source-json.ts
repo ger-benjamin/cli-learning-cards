@@ -1,5 +1,5 @@
 export interface Side {
-  key: string;
+  main: string;
   variations: string[];
 }
 
@@ -11,6 +11,7 @@ export interface Card {
 export interface Item {
   id: string;
   card: Card;
+  categories: string[];
   last_revision: Date;
   revision_count: number;
   favorite_lvl: number;

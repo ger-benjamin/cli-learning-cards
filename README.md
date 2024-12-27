@@ -18,28 +18,27 @@ Add a `source.json` file with this structure in the `data` folder:
   "items": [
     {
       "id": "The money",
-      "cards": {
+      "card": {
         "front": {
-          "key": "The Money",
-          "variations": ["The currency", "The cash"]
+          "main": "The Money",
         },
         "back": {
-          "key": "L'argent",
-          "variations": ["La devise", "Les liquidités"]
+          "main": "L'argent",
         }
-      },
-      "last_revision": "2024-12-16T13:33:45.609Z",
-      "revision_count": 0,
-      "favorite_lvl": 0,
-      "errors_last": 0,
-      "errors_total": 0
+      }
     }
   ]
 }
+
+
+Or a more complete one, see the possibilities in the `src/source-json.ts` file.
+
 ```
 
-
 ## Run
+
+Running the game and saving it will modify the source file placed in the data
+folder!
 
 ```bash
 npm start
@@ -48,7 +47,6 @@ npm start
 ## Ideas
  * Add a possibility to edit answers.
  * Add colors.
- * Add a "thema" field. Set some fields as optional. Add info about fields.
  * Add a possibility to select the "select card" strategy.
  * Add more choice, random order, time, challenge....
  * Release and run it without compiling it.

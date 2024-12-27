@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
 import { SelectionStrategy } from "./selection-strategy.js";
 import { getHint } from "./hint.js";
@@ -7,7 +6,8 @@ import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
 import { writeFileSync } from "node:fs";
 import gs from "./game-state.js";
-import { parseItemDate, getOneSideText } from "./utils.js";
+import { getOneSideText } from "./utils.js";
+import { parseJsonSource } from "./json-to-source.js";
 
 /**
  * Cli Learning cards main process.
@@ -21,7 +21,7 @@ export class CliLearningCards {
   private readonly msg = new Messenger();
   private readonly sourcePath: URL;
   private cardsLimit = 0;
-  private sourceJson?: SourceJson;
+  private sourceJson: SourceJson | null = null;
   private selectedItems: Item[] = [];
   private questionIndex = 0;
 
@@ -34,7 +34,7 @@ export class CliLearningCards {
    */
   async run() {
     this.msg.init();
-    await this.readJsonSource();
+    this.sourceJson = await parseJsonSource(this.sourcePath);
     if (!this.sourceJson || !this.sourceJson.items) {
       this.msg.error("Can not use source json file.");
       this.stop();
@@ -57,23 +57,6 @@ export class CliLearningCards {
    */
   stop() {
     this.msg.stop();
-  }
-
-  /**
-   * Read the source json file.
-   * @private
-   */
-  private async readJsonSource() {
-    try {
-      const contents = await readFile(this.sourcePath, { encoding: "utf8" });
-      this.sourceJson = JSON.parse(contents);
-      this.sourceJson?.items.forEach(
-        (item) =>
-          (item.last_revision = parseItemDate(item.id, item.last_revision)),
-      );
-    } catch (err) {
-      console.error((err as Error).message);
-    }
   }
 
   /**

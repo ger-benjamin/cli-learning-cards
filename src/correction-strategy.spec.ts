@@ -13,14 +13,14 @@ describe("CorrectionStrategy", () => {
   test("simple correction", () => {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     const item = items[0]!;
-    item.card.back.key = "  .Test Simple-Correction ! ";
+    item.card.back.main = "  .Test Simple-Correction ! ";
     expect(strategy.isCorrect(item, "test Simple-Correction")).toBeTruthy();
   });
 
   test("simple correction with variations", () => {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     const item = items[0]!;
-    item.card.back.key = "Correction!";
+    item.card.back.main = "Correction!";
     item.card.back.variations = ["Test s-c", "  .Test Simple-Correction ! "];
     expect(strategy.isCorrect(item, "test Simple-Correction")).toBeTruthy();
   });
