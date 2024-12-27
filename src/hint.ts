@@ -1,17 +1,14 @@
-import type { Item } from "./source-json.js";
-import gs from "./game-state.js";
-
 /**
- * @returns A hint based on the item.
+ * @returns A hint based on a text.
  */
-export const getHint = (item: Item): string => {
+export const getHint = (text: string): string => {
   const hint: string[] = [];
-  const words = gs.getSideB(item).key.split(" ");
+  const words = text.split(" ");
   words.forEach((word) => {
     const letters = word.split("").sort();
     hint.push(...letters);
     hint.push(" ");
   });
   hint.pop();
-  return `(${hint.join("")})`;
+  return `${hint.join("")}`;
 };

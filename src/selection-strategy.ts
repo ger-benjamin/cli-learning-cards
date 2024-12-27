@@ -1,5 +1,5 @@
 import type { Item } from "./source-json.js";
-import shuffle from "lodash/shuffle.js";
+import sampleSize from "lodash/sampleSize.js";
 import gs from "./game-state.js";
 
 /** Possible Selection strategies. */
@@ -41,6 +41,6 @@ export class SelectionStrategy {
    * @private
    */
   private selectRandomItems(items: Item[], howMany: number) {
-    return shuffle(items).slice(0, howMany);
+    return sampleSize(items, howMany);
   }
 }

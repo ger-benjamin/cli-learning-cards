@@ -46,9 +46,9 @@ npm start
 ```
 
 ## Ideas
- * Add a possibility to save answer as "variation" on demand.
- * Add "_favorite" special arguments.
+ * Add a possibility to edit answers.
  * Add colors.
+ * Add a "thema" field. Set some fields as optional. Add info about fields.
  * Add a possibility to select the "select card" strategy.
  * Add more choice, random order, time, challenge....
  * Release and run it without compiling it.

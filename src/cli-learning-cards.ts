@@ -7,7 +7,7 @@ import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
 import { writeFileSync } from "node:fs";
 import gs from "./game-state.js";
-import { parseItemDate } from "./utils.js";
+import { parseItemDate, getOneSideText } from "./utils.js";
 
 /**
  * Cli Learning cards main process.
@@ -137,8 +137,9 @@ export class CliLearningCards {
    * @private
    */
   private async processQuestion(item: Item, hint = false): Promise<void> {
-    const question = gs.getSideA(item).key;
-    const hintText = hint ? getHint(item) : "";
+    const question = getOneSideText(gs.getSideA(item));
+    const expected = getOneSideText(gs.getSideB(item));
+    const hintText = hint ? `(${getHint(expected)})` : "";
     const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
       await this.processQuestion(item, hint);
@@ -149,7 +150,7 @@ export class CliLearningCards {
       return;
     }
     if (answer === "_skip") {
-      this.msg.log(`=> ${gs.getSideB(item)}\n`);
+      this.msg.log(`=> ${expected}\n`);
       return;
     }
     if (answer === "_hint") {
