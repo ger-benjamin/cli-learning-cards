@@ -1,6 +1,7 @@
 import type { Item, Side } from "./source-json.js";
 import { SelectionStrategies } from "./selection-strategy.js";
 import { CorrectionStrategies } from "./correction-strategy.js";
+import { HintStrategies } from "./hint-strategy.js";
 import type { Answer } from "./game-state-types.js";
 
 /**
@@ -12,11 +13,13 @@ class GameState {
   private questionIsFront = true;
   private selectionStrategy: SelectionStrategies;
   private correctionStrategy: CorrectionStrategies;
+  private hintStrategy: HintStrategies;
   private answers: Answer[] = [];
 
   constructor() {
     this.selectionStrategy = "random" as SelectionStrategies;
     this.correctionStrategy = "Simple" as CorrectionStrategies;
+    this.hintStrategy = "sortLetters" as HintStrategies;
   }
 
   isGameStopped(): boolean {
@@ -41,6 +44,14 @@ class GameState {
 
   setCorrectionStrategy(value: CorrectionStrategies) {
     this.correctionStrategy = value;
+  }
+
+  getHintStrategy(): HintStrategies {
+    return this.hintStrategy;
+  }
+
+  setHintStrategy(value: HintStrategies) {
+    this.hintStrategy = value;
   }
 
   setQuestionIsFront(value: boolean) {

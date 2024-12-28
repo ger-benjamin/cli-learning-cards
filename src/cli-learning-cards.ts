@@ -1,7 +1,7 @@
 import type { Item, SourceJson } from "./source-json.js";
 import { SelectionStrategy } from "./selection-strategy.js";
-import { getHint } from "./hint.js";
 import { CorrectionStrategy } from "./correction-strategy.js";
+import { HintStrategy } from "./hint-strategy.js";
 import { printResults } from "./results.js";
 import { Messenger } from "./messenger.js";
 import { writeFileSync } from "node:fs";
@@ -18,6 +18,7 @@ export class CliLearningCards {
   private readonly now = new Date();
   private readonly selectionStrategy = new SelectionStrategy();
   private readonly correctionStrategy = new CorrectionStrategy();
+  private readonly hintStrategy = new HintStrategy();
   private readonly msg = new Messenger();
   private readonly sourcePath: URL;
   private cardsLimit = 0;
@@ -122,7 +123,7 @@ export class CliLearningCards {
   private async processQuestion(item: Item, hint = false): Promise<void> {
     const question = getOneSideText(gs.getSideA(item));
     const expected = getOneSideText(gs.getSideB(item));
-    const hintText = hint ? `(${getHint(expected)})` : "";
+    const hintText = hint ? `(${this.hintStrategy.getHint(item)})` : "";
     const answer = await this.msg.ask(`${question} ${hintText}\n`);
     if (answer === "") {
       await this.processQuestion(item, hint);
