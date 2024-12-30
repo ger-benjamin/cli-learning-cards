@@ -1,8 +1,17 @@
-import type { Item, Side } from "./source-json.js";
+import type { Side, Item, SourceJson } from "./source-json.js";
+import type { Answer } from "./game-state-types.js";
 import { SelectionStrategies } from "./selection-strategy.js";
 import { CorrectionStrategies } from "./correction-strategy.js";
 import { HintStrategies } from "./hint-strategy.js";
-import type { Answer } from "./game-state-types.js";
+import { EventValue } from "./event.js";
+
+export const enum GameStateScene {
+  SPLASH_SCREEN = "splash-screen",
+  SETTINGS = "settings",
+  CARD = "card",
+  RESULTS = "results",
+  EXIT = "exit",
+}
 
 /**
  * Represents the currents state of a game.
@@ -10,16 +19,97 @@ import type { Answer } from "./game-state-types.js";
  */
 class GameState {
   private gameStopped = false;
-  private questionIsFront = true;
+  private activeScene = new EventValue<GameStateScene>();
   private selectionStrategy: SelectionStrategies;
   private correctionStrategy: CorrectionStrategies;
   private hintStrategy: HintStrategies;
+  private questionIsFront = true;
   private answers: Answer[] = [];
+  private sourceJson: SourceJson | null = null;
+  private selectedItems: Item[] = [];
+  private cardsLimit = 0;
+  private questionIndex = 0;
+  private currentCardItem = new EventValue<Item>();
+  private showHint = new EventValue<boolean>();
+  private message = new EventValue<string>();
+  private error = new EventValue<string>();
 
   constructor() {
     this.selectionStrategy = "random" as SelectionStrategies;
     this.correctionStrategy = "Simple" as CorrectionStrategies;
     this.hintStrategy = "sortLetters" as HintStrategies;
+  }
+
+  setActiveScene(value: GameStateScene) {
+    this.activeScene.setValue(value);
+  }
+
+  getActiveScene(): EventValue<GameStateScene> {
+    return this.activeScene;
+  }
+
+  setCurrentCardItem(item: Item) {
+    this.currentCardItem.setValue(item);
+  }
+
+  getCurrentCardItem(): EventValue<Item> {
+    return this.currentCardItem;
+  }
+
+  setShowHint(showHint: boolean) {
+    this.showHint.setValue(showHint);
+  }
+
+  getShowHint(): EventValue<boolean> {
+    return this.showHint;
+  }
+
+  setMessage(message: string) {
+    this.message.setValue(message);
+  }
+
+  getMessage(): EventValue<string> {
+    return this.message;
+  }
+
+  setError(error: string) {
+    this.error.setValue(error);
+  }
+
+  getError(): EventValue<string> {
+    return this.error;
+  }
+
+  setSourceJson(sourceJson: SourceJson | null) {
+    this.sourceJson = sourceJson;
+  }
+
+  getSourceJson(): SourceJson | null {
+    return this.sourceJson;
+  }
+
+  setSelectedItems(items: Item[]) {
+    this.selectedItems = items;
+  }
+
+  getSelectedItems(): Item[] {
+    return this.selectedItems;
+  }
+
+  setCardsLimit(limit: number) {
+    this.cardsLimit = limit;
+  }
+
+  getCardsLimit(): number {
+    return this.cardsLimit;
+  }
+
+  setQuestionIndex(index: number) {
+    this.questionIndex = index;
+  }
+
+  getQuestionIndex(): number {
+    return this.questionIndex;
   }
 
   isGameStopped(): boolean {

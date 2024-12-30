@@ -11,7 +11,8 @@
     "lint": "eslint src/*.ts src/**/*.ts",
     "prettier": "prettier 'src/{**/*,*}.{js,ts,tsx}' --write",
     "test": "vitest run",
-    "start": "node dist/src/index.js"
+    "start": "node dist/src/index.js",
+    "debug": "node --inspect dist/src/index.js"
   },
   "keywords": [
     "cli",

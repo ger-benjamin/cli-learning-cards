@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
-import { lightMessenger as lmsg } from "./messenger.js";
 
 /**
  * @returns a parsed Date or log an error and returns "now".
@@ -8,7 +7,7 @@ import { lightMessenger as lmsg } from "./messenger.js";
 export const parseItemDate = (id: string, date: Date | string): Date => {
   const parsedDate = new Date(date);
   if (!parsedDate || isNaN(parsedDate.getTime())) {
-    lmsg.error(`Wrong date format on entry: ${id}, use now instead.`);
+    console.error(`Wrong date format on entry: ${id}, use now instead.`);
     return new Date();
   }
   return parsedDate;
@@ -75,7 +74,7 @@ export const parseJsonSource = async (
       fromAnyItemToItem(anyItem, index),
     );
   } catch (err) {
-    lmsg.error((err as Error).message);
+    console.error((err as Error).message);
   }
   return items ? { items } : null;
 };
