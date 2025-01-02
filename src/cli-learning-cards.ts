@@ -9,13 +9,6 @@ import {
   CardScene,
   ResultsScene,
 } from "./scenes/index.js";
-import {
-  EnterAnyKeyIE,
-  SettingsIE,
-  CardIE,
-  ResultsIE,
-} from "./input-entries/index.js";
-import type { InputEntry } from "./input-entries/index.js";
 
 /**
  * Cli Learning cards main process.
@@ -23,14 +16,12 @@ import type { InputEntry } from "./input-entries/index.js";
  * card and handle answers.
  */
 export class CliLearningCards {
-  private readonly sourcePath: URL;
   private rl: readline.Interface;
   private scene?: Scene;
-  private inputEntry?: InputEntry;
 
   constructor(sourcePath: URL) {
     this.rl = createInterface({ input: stdin, output: stdout });
-    this.sourcePath = sourcePath;
+    gs.setSourcePath(sourcePath);
     gs.getActiveScene().on("change", (scene: GameStateScene) => {
       this.setScene(scene);
     });
@@ -43,12 +34,7 @@ export class CliLearningCards {
   startStream() {
     this.rl
       .on("line", (line) => {
-        if (this.scene) {
-          this.scene.render();
-        }
-        if (line !== undefined && this.inputEntry) {
-          this.inputEntry.readLine(line);
-        }
+        this.scene?.readLine(line);
       })
       .on("close", () => {
         process.exit(0);
@@ -71,18 +57,14 @@ export class CliLearningCards {
 
   private setScene(scene: GameStateScene) {
     if (scene === GameStateScene.SPLASH_SCREEN) {
-      this.scene = new SplashScreenScene();
-      this.inputEntry = new EnterAnyKeyIE(GameStateScene.SETTINGS);
+      this.scene = new SplashScreenScene(GameStateScene.SETTINGS);
     } else if (scene === GameStateScene.SETTINGS) {
       this.scene = new SettingsScene();
-      this.inputEntry = new SettingsIE(this.sourcePath);
     } else if (scene === GameStateScene.CARD) {
       this.scene = new CardScene();
-      this.inputEntry = new CardIE();
     } else if (scene === GameStateScene.RESULTS) {
       if (gs.getAnswers().length) {
         this.scene = new ResultsScene();
-        this.inputEntry = new ResultsIE(this.sourcePath);
       } else {
         gs.setActiveScene(GameStateScene.EXIT);
       }
@@ -91,7 +73,7 @@ export class CliLearningCards {
       return;
     }
     if (this.scene) {
-      this.scene.render();
+      this.scene.start();
     }
   }
 }

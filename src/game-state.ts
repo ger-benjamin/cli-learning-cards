@@ -25,12 +25,11 @@ class GameState {
   private hintStrategy: HintStrategies;
   private questionIsFront = true;
   private answers: Answer[] = [];
+  private sourcePath: URL | null = null;
   private sourceJson: SourceJson | null = null;
   private selectedItems: Item[] = [];
   private cardsLimit = 0;
   private questionIndex = 0;
-  private currentCardItem = new EventValue<Item>();
-  private showHint = new EventValue<boolean>();
   private message = new EventValue<string>();
   private error = new EventValue<string>();
 
@@ -48,22 +47,6 @@ class GameState {
     return this.activeScene;
   }
 
-  setCurrentCardItem(item: Item) {
-    this.currentCardItem.setValue(item);
-  }
-
-  getCurrentCardItem(): EventValue<Item> {
-    return this.currentCardItem;
-  }
-
-  setShowHint(showHint: boolean) {
-    this.showHint.setValue(showHint);
-  }
-
-  getShowHint(): EventValue<boolean> {
-    return this.showHint;
-  }
-
   setMessage(message: string) {
     this.message.setValue(message);
   }
@@ -78,6 +61,14 @@ class GameState {
 
   getError(): EventValue<string> {
     return this.error;
+  }
+
+  setSourcePath(sourcePath: URL) {
+    this.sourcePath = sourcePath;
+  }
+
+  getSourcePath(): URL {
+    return this.sourcePath ?? new URL("json", "path-must-be-set");
   }
 
   setSourceJson(sourceJson: SourceJson | null) {
