@@ -30,10 +30,9 @@ Add a `source.json` file with this structure in the `data` folder:
   ]
 }
 
+```
 
 Or a more complete one, see the possibilities in the `src/source-json.ts` file.
-
-```
 
 ## Run
 

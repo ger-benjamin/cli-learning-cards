@@ -1,5 +1,4 @@
 import type { Item } from "./source-json.js";
-import { lightMessenger as lmsg } from "./messenger.js";
 import gs from "./game-state.js";
 import { getSideTexts } from "./utils.js";
 
@@ -15,13 +14,13 @@ const printOneResult = (item: Item) => {
   }
   const expectedMain = expectedPossibilities.shift();
   const questionAnswerTxt = `${answerItem.question} - ${answerItem.answer}`;
-  lmsg.log(`${questionAnswerTxt} - ${expectedMain}\n`);
+  console.log(`${questionAnswerTxt} - ${expectedMain}\n`);
   if (!expectedPossibilities.length) {
     return;
   }
   const spacers = Array(questionAnswerTxt.length).fill(" ").join("");
   expectedPossibilities.forEach((expected) => {
-    lmsg.log(`${spacers} - ${expected}\n`);
+    console.log(`${spacers} - ${expected}\n`);
   });
 };
 
@@ -31,17 +30,17 @@ const printOneResult = (item: Item) => {
 export const printResults = (items: Item[]) => {
   const mastered = items.filter((item) => item.errors_last === 0);
   const toRevise = items.filter((item) => item.errors_last !== 0);
-  lmsg.showSeparation();
-  lmsg.log("Results:");
-  lmsg.log("(Question - last answer - possible answers)");
+  console.log("==================");
+  console.log("Results:");
+  console.log("(Question - last answer - possible answers)");
   if (mastered.length) {
-    lmsg.log("Perfectly known:");
+    console.log("Perfectly known:");
     mastered.forEach((item) => {
       printOneResult(item);
     });
   }
   if (toRevise.length) {
-    lmsg.log("To revise again:");
+    console.log("To revise again:");
     toRevise.forEach((item) => {
       printOneResult(item);
     });

@@ -1,5 +1,4 @@
 import type { Item } from "./source-json.js";
-import { lightMessenger as lmsg } from "./messenger.js";
 import { getSideTexts } from "./utils.js";
 import lowerFirst from "lodash/lowerFirst.js";
 import gs from "./game-state.js";
@@ -40,7 +39,7 @@ export class CorrectionStrategy {
     const modifiedAnswer = this.sanitize(answer);
     return expectedTexts.some((expected) => {
       const modifiedExpected = this.sanitize(expected);
-      lmsg.debug(`src: ${modifiedExpected} - asw: ${modifiedAnswer}`);
+      console.debug(`src: ${modifiedExpected} - asw: ${modifiedAnswer}`);
       return modifiedExpected === modifiedAnswer;
     });
   }
