@@ -4,8 +4,13 @@ import gs, { GameStateScene } from "../game-state.js";
 
 export abstract class Scene {
   protected readonly content: Map<string, string> = new Map<string, string>();
+  protected tHeight: number;
+  protected tWidth: number;
 
-  constructor() {}
+  constructor() {
+    this.tHeight = process.stdout.rows;
+    this.tWidth = process.stdout.columns;
+  }
 
   start() {
     this.clean();
@@ -23,6 +28,10 @@ export abstract class Scene {
         console.log(entry);
       }
     });
+  }
+
+  getCardWidth(): number {
+    return Math.min(this.tWidth, 50);
   }
 
   setContent(line: string, text: string, silent = false) {
