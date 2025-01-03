@@ -4,6 +4,7 @@ import { HintStrategy } from "../hint-strategy.js";
 import { getOneSideText } from "../utils.js";
 import gs, { GameStateScene } from "../game-state.js";
 import { CorrectionStrategy } from "../correction-strategy.js";
+import { drawCard } from "./draw-card.js";
 
 export class CardScene extends Scene {
   private readonly hintStrategy = new HintStrategy();
@@ -30,7 +31,8 @@ export class CardScene extends Scene {
   showQuestion(item: Item, hint: boolean, silent = false) {
     const question = getOneSideText(gs.getSideA(item));
     const hintText = hint ? `(${this.hintStrategy.getHint(item)})` : "";
-    this.setContent("card", `${question} ${hintText}`, silent);
+    const card = drawCard([question, hintText], this.getCardWidth());
+    this.setContent("card", card, silent);
   }
 
   /**
