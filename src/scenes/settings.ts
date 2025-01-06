@@ -3,6 +3,9 @@ import { SelectionStrategy } from "../selection-strategy.js";
 import { parseJsonSource } from "../json-to-source.js";
 import gs, { GameStateScene } from "../game-state.js";
 
+/**
+ * A UI for the settings.
+ */
 export class SettingsScene extends Scene {
   private readonly selectionStrategy = new SelectionStrategy();
   private readonly noAnswer = "_noAnswer";
@@ -18,6 +21,10 @@ export class SettingsScene extends Scene {
     }
   }
 
+  /**
+   * Read answers and set settings regarding the current state.
+   * @param answer
+   */
   override readLine(answer: string): void {
     if (this.fetchingJson || !gs.getSourceJson()) {
       return;
@@ -33,12 +40,16 @@ export class SettingsScene extends Scene {
     this.exit(GameStateScene.CARD);
   }
 
+  /**
+   * Read the json data source amd throw error if it can't be handled.
+   * @private
+   */
   private async parseJson() {
     this.fetchingJson = true;
     const sourceJson = await parseJsonSource(gs.getSourcePath());
     if (!sourceJson || !sourceJson.items) {
-      throw new Error("Can not use source json file.");
       this.exit(GameStateScene.EXIT);
+      throw new Error("Can not use source json file.");
     }
     gs.setSourceJson(sourceJson);
     this.fetchingJson = false;
@@ -47,7 +58,7 @@ export class SettingsScene extends Scene {
   }
 
   /**
-   * Ask how many item to show.
+   * Ask how many card item to show.
    * @private
    */
   private askNumberCards(answer: string) {

@@ -3,13 +3,17 @@ import { Scene } from "./scene.js";
 import { printResults } from "../results.js";
 import gs, { GameStateScene } from "../game-state.js";
 
+/**
+ * A UI for results.
+ * This is currently in a "WIP" state.
+ */
 export class ResultsScene extends Scene {
   constructor() {
     super();
   }
 
   override start() {
-    this.clean();
+    this.clear();
     printResults(gs.getSelectedItems());
     console.log("Do you want to save the results?");
   }

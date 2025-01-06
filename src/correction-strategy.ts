@@ -39,7 +39,6 @@ export class CorrectionStrategy {
     const modifiedAnswer = this.sanitize(answer);
     return expectedTexts.some((expected) => {
       const modifiedExpected = this.sanitize(expected);
-      console.debug(`src: ${modifiedExpected} - asw: ${modifiedAnswer}`);
       return modifiedExpected === modifiedAnswer;
     });
   }
