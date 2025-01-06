@@ -54,7 +54,7 @@ export const fromAnyItemToItem = (
 };
 
 /**
- * Read and setup the source json file (or show error and returns null).
+ * Read and set up the source json file (or show error and returns null).
  * @returns a SourceJson or null.
  */
 export const parseJsonSource = async (

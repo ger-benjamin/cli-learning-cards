@@ -9,7 +9,7 @@ describe("json-to-source", () => {
     result = parseItemDate("test string valid", now);
     expect(result.getDate()).toBe(now.getDate());
     result = parseItemDate(
-      "test string not valide",
+      "test string not valid",
       "2024-123456-26T13:09:22.416Z",
     );
     expect(result.getDate()).toBe(now.getDate());

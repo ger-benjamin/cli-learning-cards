@@ -21,7 +21,7 @@ describe("utils", () => {
       .map(() => getOneSideText(item.card.front))
       .join("");
     expect(result.length).toBe(5);
-    // Probabily for false positive are 1/3125.
+    // The probability for false positive is 1/3125.
     expect(result).not.toBe("aaaaa");
     expect(result).not.toBe("bbbbb");
     expect(result).not.toBe("ccccc");

@@ -18,7 +18,6 @@ export const enum GameStateScene {
  * Should be used as singleton.
  */
 class GameState {
-  private gameStopped = false;
   private activeScene = new EventValue<GameStateScene>();
   private selectionStrategy: SelectionStrategies;
   private correctionStrategy: CorrectionStrategies;
@@ -103,14 +102,6 @@ class GameState {
     return this.questionIndex;
   }
 
-  isGameStopped(): boolean {
-    return this.gameStopped;
-  }
-
-  stopGame() {
-    this.gameStopped = true;
-  }
-
   getSelectionStrategy(): SelectionStrategies {
     return this.selectionStrategy;
   }
@@ -148,8 +139,8 @@ class GameState {
   }
 
   /**
-   * Get the "side" of a an item card.
-   * if it's the "front", then the "side B" will be the back, and vice-versa.
+   * Get the "side" of an item card.
+   * if it's the "front", then the "side B" will be the back, and vice versa.
    * */
   getSideA(item: Item): Side {
     if (this.questionIsFront) {
@@ -160,8 +151,8 @@ class GameState {
   }
 
   /**
-   * Get a "side" of a an item card.
-   * if it's the "front", then the "side A" will be the back, and vice-versa.
+   * Get a "side" of an item card.
+   * if it's the "front", then the "side A" will be the back, and vice versa.
    */
   getSideB(item: Item): Side {
     if (this.questionIsFront) {

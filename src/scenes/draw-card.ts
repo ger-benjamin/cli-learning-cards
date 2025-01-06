@@ -1,7 +1,7 @@
 /**
- * Like String.split, but preserve the split symbol except for the last one.
+ * Like "String.split", but preserve the split symbol except for the last one.
  * Example: splitKeep('Machine-learning', '-') will return ['machine-', 'learning']
- * @returns the splitted part of the text.
+ * @returns the split part of the text.
  */
 export const splitKeep = (text: string, splitBy: string): string[] => {
   // Returns the text as is if it doesn't contain the split symbol.
@@ -9,11 +9,11 @@ export const splitKeep = (text: string, splitBy: string): string[] => {
     return [text];
   }
   const parts = text.split(splitBy).map((part) => `${part}${splitBy}`);
-  // Don't drop the last charactere on empty splitBy.
+  // Don't drop the last character on empty splitBy.
   if (splitBy === "") {
     return parts;
   }
-  // Remove the last part's splitBy charactere added by this function.
+  // Remove the last part's splitBy character added by this function.
   let last = parts.pop();
   if (last) {
     last = last.slice(0, last.length - 1);
@@ -23,7 +23,7 @@ export const splitKeep = (text: string, splitBy: string): string[] => {
 };
 
 /**
- * Split a text (by space, carret...) into strings not longer than a given
+ * Split a text (by space, caret...) into strings not longer than a given
  * value.
  * Param "level" must not be set manually.
  * @returns an array of length limited strings.
@@ -42,14 +42,13 @@ export const splitText = (
   if (level > 0) {
     splitBy = level === 1 ? "-" : "";
   }
-  const parts = splitKeep(text, splitBy)
+  return splitKeep(text, splitBy)
     .map((part) => splitText(part, maxLetters, level + 1))
     .flat();
-  return parts;
 };
 
 /**
- * Split a text into lines with a limited amount of characteres.
+ * Split a text into lines with a limited amount of characters.
  * @returns an array of length limited lines.
  */
 export const getLimitedSizeLines = (

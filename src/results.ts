@@ -8,14 +8,14 @@ import { getSideTexts } from "./utils.js";
 const printOneResult = (item: Item) => {
   const expectedPossibilities = getSideTexts(gs.getSideB(item));
   const answers = gs.getAnswers();
-  const answerItem = answers.find((answer) => (item.id = answer.id));
+  const answerItem = answers.find((answer) => item.id === answer.id);
   if (!answerItem) {
     return;
   }
   const expectedMain = expectedPossibilities.shift();
-  const questionAnswerTxt = `${answerItem.question} - ${answerItem.answer}`;
-  console.log(`${questionAnswerTxt} - ${expectedMain}\n`);
+  const questionAnswerTxt = `${answerItem.displayedQuestion} - ${answerItem.userAnswer}`;
   if (!expectedPossibilities.length) {
+    console.log(`${questionAnswerTxt} - ${expectedMain}\n`);
     return;
   }
   const spacers = Array(questionAnswerTxt.length).fill(" ").join("");

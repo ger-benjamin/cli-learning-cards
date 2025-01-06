@@ -43,11 +43,16 @@ folder!
 npm start
 ```
 
-## Ideas
- * Add a possibility to edit answers.
+## Next steps
+ * Add a true scene for results.
+ * Add a true scene for settings.
+ * Add a "help" scene.
+ * Add a "exist" scene.
  * Add colors.
  * Add a possibility to select the "select card" strategy.
+ * Add a possibility to start up with a configuration (args)
  * Add more choice, random order, time, challenge....
+ * Add a possibility to edit answers.
  * Release and run it without compiling it.
  * Move to deno ?
  * Add a json schema and validate source.

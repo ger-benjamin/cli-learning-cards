@@ -10,13 +10,13 @@ export const enum HintStrategies {
 }
 
 /**
- * Select a strategy to display an hint on an answer.
+ * Select a strategy to display a hint on an answer.
  */
 export class HintStrategy {
   constructor() {}
 
   /**
-   * @returns A hint based on a the answer and the selected hint strategy.
+   * @returns A hint based on the answer and the selected hint strategy.
    */
   getHint(item: Item): string {
     const answerText = getOneSideText(gs.getSideB(item));
@@ -27,7 +27,7 @@ export class HintStrategy {
   }
 
   /**
-   * @returns one answer text but, per word, with each letters sort.
+   * @returns one answer text but, per word, with each letter sort.
    */
   private sortLetters(answerText: string): string {
     const hint: string[] = [];

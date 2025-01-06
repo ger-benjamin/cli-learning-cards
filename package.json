@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Small CLI application for repeating terms with a card system.",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/run.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run prettier && npm run lint && npm run build-only && npm run test",
@@ -11,8 +11,8 @@
     "lint": "eslint src/*.ts src/**/*.ts",
     "prettier": "prettier 'src/{**/*,*}.{js,ts,tsx}' --write",
     "test": "vitest run",
-    "start": "node dist/src/index.js",
-    "debug": "node --inspect dist/src/index.js"
+    "start": "node dist/src/run.js",
+    "debug": "node --inspect dist/src/run.js"
   },
   "keywords": [
     "cli",

@@ -55,6 +55,11 @@ export class CliLearningCards {
     this.startStream();
   }
 
+  /**
+   * Activate another scene based on the GameStateScene.
+   * Auto call "start" on scene change.
+   * @private
+   */
   private setScene(scene: GameStateScene) {
     if (scene === GameStateScene.SPLASH_SCREEN) {
       this.scene = new SplashScreenScene(GameStateScene.SETTINGS);
