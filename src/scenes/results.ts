@@ -3,6 +3,8 @@ import { Scene } from "./scene.js";
 import gs, { GameStateScene } from "../game-state.js";
 import type { Item } from "../source-json.js";
 import { getSideTexts } from "../utils.js";
+import { drawCard } from "./draw-card.js";
+import { getCardWidth } from "./card-utils.js";
 
 /**
  * A UI for results.
@@ -94,7 +96,11 @@ Results:
     this.content.set("section", "");
     this.content.set("title", "");
     if (!["yes", "y", "1", "true", "t"].includes(answer.toLowerCase())) {
-      this.setContent("title", "No results saved.");
+      const card = drawCard(
+        ["Ok, the results are left unsaved."],
+        getCardWidth(this.tWidth),
+      );
+      this.setContent("title", card);
       return;
     }
     const revisedItemsIds = gs.getSelectedItems().map((item) => item.id);
@@ -113,9 +119,10 @@ Results:
         },
       );
     } catch (error) {
-      gs.setError(`${error}`);
+      gs.setError((error as Error).message);
       return;
     }
-    this.setContent("title", "Results saved!");
+    const card = drawCard(["Results saved!"], getCardWidth(this.tWidth));
+    this.setContent("title", card);
   }
 }

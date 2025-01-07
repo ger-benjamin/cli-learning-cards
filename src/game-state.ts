@@ -11,6 +11,7 @@ export const enum GameStateScene {
   CARD = "card",
   RESULTS = "results",
   EXIT = "exit",
+  NO_SCENE = "no_scene",
 }
 
 /**
@@ -29,7 +30,6 @@ class GameState {
   private selectedItems: Item[] = [];
   private cardsLimit = 0;
   private questionIndex = 0;
-  private message = new EventValue<string>();
   private error = new EventValue<string>();
 
   constructor() {
@@ -44,14 +44,6 @@ class GameState {
 
   getActiveScene(): EventValue<GameStateScene> {
     return this.activeScene;
-  }
-
-  setMessage(message: string) {
-    this.message.setValue(message);
-  }
-
-  getMessage(): EventValue<string> {
-    return this.message;
   }
 
   setError(error: string) {

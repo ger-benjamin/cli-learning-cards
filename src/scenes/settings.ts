@@ -49,7 +49,6 @@ export class SettingsScene extends Scene {
     const sourceJson = await parseJsonSource(gs.getSourcePath());
     if (!sourceJson || !sourceJson.items) {
       this.exit(GameStateScene.EXIT);
-      throw new Error("Can not use source json file.");
     }
     gs.setSourceJson(sourceJson);
     this.fetchingJson = false;

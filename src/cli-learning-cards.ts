@@ -8,6 +8,7 @@ import {
   SettingsScene,
   CardScene,
   ResultsScene,
+  ExitScene,
 } from "./scenes/index.js";
 
 /**
@@ -73,6 +74,8 @@ export class CliLearningCards {
       } else {
         gs.setActiveScene(GameStateScene.EXIT);
       }
+    } else if (scene === GameStateScene.EXIT) {
+      this.scene = new ExitScene();
     } else {
       this.stop();
       return;
