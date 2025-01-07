@@ -16,7 +16,7 @@ const generateTestItem = (index: number): Item => {
       },
       back: {
         main: `back-${index}`,
-        variations: [`front-back1-${index}`],
+        variations: [`back-var1-${index}`],
       },
     },
     last_revision: new Date(),
