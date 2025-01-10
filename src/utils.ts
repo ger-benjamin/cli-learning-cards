@@ -15,3 +15,11 @@ export const getOneSideText = (side: Side): string => {
   const texts = getSideTexts(side);
   return sample(texts) ?? side.main;
 };
+
+/**
+ * @returns 16 numbers between 0 and 9;
+ */
+export const createRandomNumbers = (): number[] => {
+  const textNumbers = Math.random().toString().slice(2);
+  return textNumbers.split("").map((nb) => parseInt(nb));
+};

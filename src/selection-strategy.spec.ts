@@ -1,10 +1,8 @@
 import { expect, test, describe } from "vitest";
-import {
-  SelectionStrategy,
-  SelectionStrategies,
-} from "./selection-strategy.js";
+import { SelectionStrategy } from "./selection-strategy.js";
 import gs from "./game-state.js";
 import { generateTestItems } from "./test-data.js";
+import { SelectionStrategies } from "./enums.js";
 
 describe("SelectionStrategy", () => {
   const strategy = new SelectionStrategy();

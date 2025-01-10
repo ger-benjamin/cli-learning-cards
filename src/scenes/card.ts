@@ -2,10 +2,12 @@ import { Scene } from "./scene.js";
 import type { Item } from "../source-json.js";
 import { HintStrategy } from "../hint-strategy.js";
 import { getOneSideText } from "../utils.js";
-import gs, { GameStateScene } from "../game-state.js";
+import gs from "../game-state.js";
 import { CorrectionStrategy } from "../correction-strategy.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
+import { SelectionStrategy } from "../selection-strategy.js";
+import { GameStateScene } from "../enums.js";
 
 /**
  * A UI for cards questions.
@@ -13,6 +15,7 @@ import { getCardWidth } from "./card-utils.js";
 export class CardScene extends Scene {
   private readonly hintStrategy = new HintStrategy();
   private readonly correctionStrategy = new CorrectionStrategy();
+  private readonly selectionStrategy = new SelectionStrategy();
   private readonly now = new Date();
   private item: Item;
   private hint = false;
@@ -23,6 +26,7 @@ export class CardScene extends Scene {
     this.content.set("game", "");
     this.content.set("card", "");
     this.content.set("info", "");
+    this.selectItems();
     const selectedItems = gs.getSelectedItems();
     const item = selectedItems[0];
     if (!item) {
@@ -115,8 +119,9 @@ export class CardScene extends Scene {
    * @private
    */
   private nextQuestion() {
+    const cardLimit = gs.getCardsLimit();
     gs.setQuestionIndex(gs.getQuestionIndex() + 1);
-    if (gs.getQuestionIndex() >= gs.getCardsLimit()) {
+    if (!cardLimit || gs.getQuestionIndex() >= cardLimit) {
       this.exit(GameStateScene.RESULTS);
       return;
     }
@@ -125,5 +130,18 @@ export class CardScene extends Scene {
     this.hint = false;
     this.setContent("info", "", true);
     this.showQuestion(this.item, this.hint);
+  }
+
+  /**
+   * Get random items via a strategy.
+   * @private
+   */
+  private selectItems() {
+    const items = [...(gs.getSourceJson()?.items ?? [])];
+    const selectedItems = this.selectionStrategy.selectItems(
+      items,
+      gs.getCardsLimit() ?? 0,
+    );
+    gs.setSelectedItems(selectedItems);
   }
 }

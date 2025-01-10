@@ -3,11 +3,6 @@ import { getSideTexts } from "./utils.js";
 import lowerFirst from "lodash/lowerFirst.js";
 import gs from "./game-state.js";
 
-/** Possible Correction strategies. */
-export const enum CorrectionStrategies {
-  Simple = "simple",
-}
-
 /**
  * Select a strategy for the comparison between the expected answer, and
  * the actual answer.

@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import type { Item, SourceJson } from "./source-json.js";
+import gs from "./game-state.js";
 
 /**
  * @returns a parsed Date or log an error and returns "now".
@@ -7,7 +8,7 @@ import type { Item, SourceJson } from "./source-json.js";
 export const parseItemDate = (id: string, date: Date | string): Date => {
   const parsedDate = new Date(date);
   if (!parsedDate || isNaN(parsedDate.getTime())) {
-    console.error(`Wrong date format on entry: ${id}, use now instead.`);
+    gs.setError(`Wrong date format on entry: ${id}, use now instead.`);
     return new Date();
   }
   return parsedDate;
@@ -67,14 +68,14 @@ export const parseJsonSource = async (
     const anySourceJson: any = JSON.parse(contents);
     const anyItems = anySourceJson?.items;
     if (!anyItems || !anyItems.length) {
-      throw new Error("Error reading source json, no items found.");
+      gs.setError("Error reading source json, no items found.");
     }
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     items = anyItems.map((anyItem: any, index: number) =>
       fromAnyItemToItem(anyItem, index),
     );
-  } catch (err) {
-    console.error((err as Error).message);
+  } catch (error) {
+    gs.setError((error as Error).message);
   }
   return items ? { items } : null;
 };

@@ -1,6 +1,7 @@
 import readline from "node:readline";
 import { stdout } from "node:process";
-import gs, { GameStateScene } from "../game-state.js";
+import gs from "../game-state.js";
+import { GameStateScene } from "../enums.js";
 
 /**
  * Abstract scene - or UI - to handle user input and render texts.

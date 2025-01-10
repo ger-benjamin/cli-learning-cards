@@ -1,10 +1,8 @@
 import { expect, test, describe } from "vitest";
-import {
-  CorrectionStrategy,
-  CorrectionStrategies,
-} from "./correction-strategy.js";
+import { CorrectionStrategy } from "./correction-strategy.js";
 import gs from "./game-state.js";
 import { generateTestItems } from "./test-data.js";
+import { CorrectionStrategies } from "./enums.js";
 
 describe("CorrectionStrategy", () => {
   const strategy = new CorrectionStrategy();
