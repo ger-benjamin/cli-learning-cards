@@ -1,7 +1,7 @@
 import { Scene } from "./scene.js";
-import { GameStateScene } from "../game-state.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
+import { GameStateScene } from "../enums.js";
 
 /**
  * A nice splash screen to welcome the user.

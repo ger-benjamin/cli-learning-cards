@@ -1,12 +1,7 @@
 import type { Item } from "./source-json.js";
 import sampleSize from "lodash/sampleSize.js";
 import gs from "./game-state.js";
-
-/** Possible Selection strategies. */
-export const enum SelectionStrategies {
-  RevisionDate = "Revision_date",
-  Random = "Random",
-}
+import { SelectionStrategies } from "./enums.js";
 
 /**
  * Get random items via a strategy.

@@ -1,7 +1,7 @@
 import readline from "node:readline";
 import { createInterface } from "node:readline";
 import { stdin, stdout } from "node:process";
-import gs, { GameStateScene } from "./game-state.js";
+import gs from "./game-state.js";
 import {
   Scene,
   SplashScreenScene,
@@ -10,6 +10,7 @@ import {
   ResultsScene,
   ExitScene,
 } from "./scenes/index.js";
+import { GameStateScene } from "./enums.js";
 
 /**
  * Cli Learning cards main process.
@@ -35,7 +36,9 @@ export class CliLearningCards {
   startStream() {
     this.rl
       .on("line", (line) => {
-        this.scene?.readLine(line);
+        if (!gs.getPauseStream()) {
+          this.scene?.readLine(line);
+        }
       })
       .on("close", () => {
         process.exit(0);

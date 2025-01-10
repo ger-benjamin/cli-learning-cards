@@ -1,97 +1,147 @@
-import type { Side, Item, SourceJson } from "./source-json.js";
+import type { Item, Side, SourceJson } from "./source-json.js";
 import type { Answer } from "./game-state-types.js";
-import { SelectionStrategies } from "./selection-strategy.js";
-import { CorrectionStrategies } from "./correction-strategy.js";
-import { HintStrategies } from "./hint-strategy.js";
 import { EventValue } from "./event.js";
-
-export const enum GameStateScene {
-  SPLASH_SCREEN = "splash-screen",
-  SETTINGS = "settings",
-  CARD = "card",
-  RESULTS = "results",
-  EXIT = "exit",
-  NO_SCENE = "no_scene",
-}
+import { GameMode } from "./enums.js";
+import {
+  CorrectionStrategies,
+  GameStateScene,
+  HintStrategies,
+  SelectionStrategies,
+} from "./enums.js";
 
 /**
  * Represents the currents state of a game.
  * Should be used as singleton.
  */
 class GameState {
+  private pauseStream = false;
   private activeScene = new EventValue<GameStateScene>();
   private selectionStrategy: SelectionStrategies;
   private correctionStrategy: CorrectionStrategies;
   private hintStrategy: HintStrategies;
-  private questionIsFront = true;
   private answers: Answer[] = [];
   private sourcePath: URL | null = null;
   private sourceJson: SourceJson | null = null;
   private selectedItems: Item[] = [];
-  private cardsLimit = 0;
+  private gameMode: GameMode | null = null;
+  private cardsLimit: number | null = null;
+  private timeElapsed = 0;
+  private timeLimit: number | null = null;
+  private hintRemaining: number | null = null;
+  private livesRemaining: number | null = null;
+  private questionIsFront = true;
+
   private questionIndex = 0;
   private error = new EventValue<string>();
 
   constructor() {
-    this.selectionStrategy = "random" as SelectionStrategies;
-    this.correctionStrategy = "Simple" as CorrectionStrategies;
-    this.hintStrategy = "sortLetters" as HintStrategies;
+    this.selectionStrategy = SelectionStrategies.Random;
+    this.correctionStrategy = CorrectionStrategies.Simple;
+    this.hintStrategy = HintStrategies.SortLetters;
   }
 
-  setActiveScene(value: GameStateScene) {
-    this.activeScene.setValue(value);
+  getPauseStream(): boolean {
+    return this.pauseStream;
+  }
+
+  setPauseStream(pause: boolean) {
+    return (this.pauseStream = pause);
   }
 
   getActiveScene(): EventValue<GameStateScene> {
     return this.activeScene;
   }
 
-  setError(error: string) {
-    this.error.setValue(error);
+  setActiveScene(value: GameStateScene) {
+    this.activeScene.setValue(value);
+  }
+
+  getGameMode(): GameMode | null {
+    return this.gameMode;
+  }
+
+  setGameMode(value: GameMode | null) {
+    this.gameMode = value;
+  }
+
+  getTimeElapsed(): number {
+    return this.timeElapsed;
+  }
+
+  setTimeElapsed(value: number) {
+    this.timeElapsed = value;
+  }
+
+  getTimeLimit(): number | null {
+    return this.timeLimit;
+  }
+
+  setTimeLimit(value: number) {
+    this.timeLimit = value;
+  }
+
+  getHintRemaining(): number | null {
+    return this.hintRemaining;
+  }
+
+  setHintRemaining(value: number) {
+    this.hintRemaining = value;
+  }
+
+  getLivesRemaining(): number | null {
+    return this.livesRemaining;
+  }
+
+  setLivesRemaining(value: number) {
+    this.livesRemaining = value;
   }
 
   getError(): EventValue<string> {
     return this.error;
   }
 
-  setSourcePath(sourcePath: URL) {
-    this.sourcePath = sourcePath;
+  setError(error: string) {
+    this.error.setValue(error);
   }
 
   getSourcePath(): URL {
     return this.sourcePath ?? new URL("json", "path-must-be-set");
   }
 
-  setSourceJson(sourceJson: SourceJson | null) {
-    this.sourceJson = sourceJson;
+  setSourcePath(sourcePath: URL) {
+    this.sourcePath = sourcePath;
   }
 
   getSourceJson(): SourceJson | null {
     return this.sourceJson;
   }
 
-  setSelectedItems(items: Item[]) {
-    this.selectedItems = items;
+  setSourceJson(sourceJson: SourceJson | null) {
+    this.sourceJson = sourceJson;
   }
 
   getSelectedItems(): Item[] {
     return this.selectedItems;
   }
 
+  setSelectedItems(items: Item[]) {
+    this.selectedItems = items;
+  }
+
+  getCardsLimit(): number | null {
+    return this.cardsLimit;
+  }
+
   setCardsLimit(limit: number) {
     this.cardsLimit = limit;
   }
 
-  getCardsLimit(): number {
-    return this.cardsLimit;
+  getQuestionIndex(): number {
+    return this.questionIndex;
   }
 
   setQuestionIndex(index: number) {
     this.questionIndex = index;
-  }
-
-  getQuestionIndex(): number {
-    return this.questionIndex;
   }
 
   getSelectionStrategy(): SelectionStrategies {
@@ -118,16 +168,16 @@ class GameState {
     this.hintStrategy = value;
   }
 
-  setQuestionIsFront(value: boolean) {
-    this.questionIsFront = value;
-  }
-
   getAnswers(): Answer[] {
     return this.answers;
   }
 
   addAnswers(answer: Answer) {
     return this.answers.push(answer);
+  }
+
+  setQuestionIsFront(value: boolean) {
+    this.questionIsFront = value;
   }
 
   /**
@@ -156,5 +206,5 @@ class GameState {
 }
 
 /** State exported as singleton. */
-const gameSettings = new GameState();
-export default gameSettings;
+const gameState = new GameState();
+export default gameState;

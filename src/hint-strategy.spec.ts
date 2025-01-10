@@ -1,7 +1,8 @@
 import { expect, test, describe } from "vitest";
 import gs from "./game-state.js";
 import { generateTestItems } from "./test-data.js";
-import { HintStrategy, HintStrategies } from "./hint-strategy.js";
+import { HintStrategy } from "./hint-strategy.js";
+import { HintStrategies } from "./enums.js";
 
 describe("hint", () => {
   const strategy = new HintStrategy();

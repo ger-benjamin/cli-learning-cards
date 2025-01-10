@@ -1,10 +1,11 @@
 import { writeFileSync } from "node:fs";
 import { Scene } from "./scene.js";
-import gs, { GameStateScene } from "../game-state.js";
+import gs from "../game-state.js";
 import type { Item } from "../source-json.js";
 import { getSideTexts } from "../utils.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
+import { GameStateScene } from "../enums.js";
 
 /**
  * A UI for results.

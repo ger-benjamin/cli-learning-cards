@@ -2,12 +2,7 @@ import sampleSize from "lodash/sampleSize.js";
 import gs from "./game-state.js";
 import { getOneSideText } from "./utils.js";
 import type { Item } from "./source-json.js";
-
-/** Possible get hint strategies. */
-export const enum HintStrategies {
-  SortLetters = "sortLetters",
-  SomeWords = "someWords",
-}
+import { HintStrategies } from "./enums.js";
 
 /**
  * Select a strategy to display a hint on an answer.
