@@ -17,7 +17,7 @@ export class CardScene extends Scene {
   private readonly correctionStrategy = new CorrectionStrategy();
   private readonly selectionStrategy = new SelectionStrategy();
   private readonly now = new Date();
-  private item: Item;
+  private item: Item | null = null;
   private hint = false;
 
   constructor() {
@@ -26,13 +26,14 @@ export class CardScene extends Scene {
     this.content.set("game", "");
     this.content.set("card", "");
     this.content.set("info", "");
-    this.selectItems();
-    const selectedItems = gs.getSelectedItems();
-    const item = selectedItems[0];
+    const item = this.selectItem();
     if (!item) {
-      throw new Error("No item, exit");
+      gs.setError("No item found.");
+      this.exit(GameStateScene.EXIT);
+      return;
     }
-    this.item = item!;
+    this.item = item;
+    this.updateBanner();
     this.showQuestion(this.item, this.hint, true);
   }
 
@@ -58,6 +59,10 @@ export class CardScene extends Scene {
    * On "_exit", quit earlier the questions process.
    */
   override readLine(answer: string): void {
+    if (!this.item) {
+      return;
+    }
+    this.updateBanner();
     const displayedQuestion = getOneSideText(gs.getSideA(this.item));
     const expected = getOneSideText(gs.getSideB(this.item));
     if (answer === "") {
@@ -101,10 +106,13 @@ export class CardScene extends Scene {
     userAnswer: string,
     isCorrect: boolean,
   ) {
+    if (!this.item) {
+      return;
+    }
     gs.addAnswers({
       displayedQuestion,
       userAnswer,
-      id: this.item.id,
+      item: this.item,
     });
     this.item.revision_count++;
     this.item.last_revision = this.now;
@@ -121,14 +129,16 @@ export class CardScene extends Scene {
   private nextQuestion() {
     const cardLimit = gs.getCardsLimit();
     gs.setQuestionIndex(gs.getQuestionIndex() + 1);
-    if (!cardLimit || gs.getQuestionIndex() >= cardLimit) {
+    const item = this.selectItem();
+    if (!item || !cardLimit || gs.getQuestionIndex() >= cardLimit) {
       this.exit(GameStateScene.RESULTS);
       return;
     }
-    this.item = gs.getSelectedItems()[gs.getQuestionIndex()]!;
+    this.item = item;
     this.item.errors_last = 0;
     this.hint = false;
     this.setContent("info", "", true);
+    this.updateBanner();
     this.showQuestion(this.item, this.hint);
   }
 
@@ -136,12 +146,25 @@ export class CardScene extends Scene {
    * Get random items via a strategy.
    * @private
    */
-  private selectItems() {
+  private selectItem(): Item | null {
     const items = [...(gs.getSourceJson()?.items ?? [])];
-    const selectedItems = this.selectionStrategy.selectItems(
-      items,
-      gs.getCardsLimit() ?? 0,
-    );
-    gs.setSelectedItems(selectedItems);
+    return this.selectionStrategy.selectItems(items, 1)[0] ?? null;
+  }
+
+  private updateBanner() {
+    const gameMode = gs.getGameMode();
+    const selectionStrategy = gs.getSelectionStrategy();
+    const correctionStrategy = gs.getCorrectionStrategy();
+    const hintStrategy = gs.getHintStrategy();
+    const cardLimit = gs.getCardsLimit();
+    const questionIndex = gs.getQuestionIndex();
+    const lives = gs.getLivesRemaining();
+    const hints = gs.getHintRemaining();
+    const timeLimit = gs.getTimeLimit();
+    const timeElapsed = gs.getTimeElapsed();
+    const mode = `${gameMode} - ${selectionStrategy} - ${correctionStrategy} - ${hintStrategy}`;
+    const game = `Q:${questionIndex + 1}/${cardLimit} - L:${lives} - H:${hints} - ${timeElapsed}/${timeLimit}`;
+    this.setContent("mode", mode, true);
+    this.setContent("game", game, true);
   }
 }

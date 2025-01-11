@@ -22,7 +22,6 @@ class GameState {
   private answers: Answer[] = [];
   private sourcePath: URL | null = null;
   private sourceJson: SourceJson | null = null;
-  private selectedItems: Item[] = [];
   private gameMode: GameMode | null = null;
   private cardsLimit: number | null = null;
   private timeElapsed = 0;
@@ -118,14 +117,6 @@ class GameState {
 
   setSourceJson(sourceJson: SourceJson | null) {
     this.sourceJson = sourceJson;
-  }
-
-  getSelectedItems(): Item[] {
-    return this.selectedItems;
-  }
-
-  setSelectedItems(items: Item[]) {
-    this.selectedItems = items;
   }
 
   getCardsLimit(): number | null {

@@ -11,12 +11,12 @@ describe("ResultsScene", () => {
     items[0]!.errors_last++;
     items.forEach((item) => {
       gs.addAnswers({
-        id: item.id,
+        item: item,
         userAnswer: gs.getSideB(item).main,
         displayedQuestion: gs.getSideA(item).main,
       });
     });
-    const results = scene.getResults(items);
+    const results = scene.getResults();
     expect(results).toEqual([
       "Perfectly known:",
       "front-1 - back-1 - back-1",

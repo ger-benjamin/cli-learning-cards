@@ -217,7 +217,7 @@ export class SettingsScene extends Scene {
     gs.setTimeLimit(timeLimit);
     gs.setLivesRemaining(getVal(2) ?? Infinity);
     gs.setHintRemaining(getVal(3) ?? Infinity);
-    let nbCards = (getVal(4) * 10) / 3 || 10;
+    let nbCards = getVal(4) * 4 || 10;
     if (timeLimit !== Infinity && getVal(4) % 2) {
       nbCards = Infinity;
     }
