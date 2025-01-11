@@ -23,6 +23,7 @@ export class CliLearningCards {
 
   constructor(sourcePath: URL) {
     this.rl = createInterface({ input: stdin, output: stdout });
+    this.rl.setPrompt("");
     gs.setSourcePath(sourcePath);
     gs.getActiveScene().on("change", (scene: GameStateScene) => {
       this.setScene(scene);

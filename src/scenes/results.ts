@@ -15,12 +15,18 @@ export class ResultsScene extends Scene {
 
   constructor() {
     super();
+    this.content.set("head", "");
     this.content.set("title", "");
     this.content.set("section", "");
   }
 
   override start() {
     this.clear();
+    if ((gs.getLivesRemaining() ?? -1) > 0) {
+      this.setContent("head", "Well done !", false);
+    } else {
+      this.setContent("head", "Game over :-(", false);
+    }
     const section = this.getResults();
     section.push("");
     section.push("Do you want to save the results (y/n) ?");

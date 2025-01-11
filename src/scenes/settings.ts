@@ -134,7 +134,7 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupFreeMode(answer: string) {
-    if (!gs.getTimeLimit()) {
+    if (!gs.getTime()) {
       this.askAmountOfTime();
       return;
     }
@@ -151,7 +151,7 @@ export class SettingsScene extends Scene {
       return;
     }
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
-    gs.setHintStrategy(HintStrategies.SortLetters);
+    gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
     gs.setQuestionIsFront(Math.random() > 0.5);
     this.exit(GameStateScene.CARD);
@@ -162,12 +162,12 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupTenMode() {
-    gs.setTimeLimit(Infinity);
+    gs.setTime(Infinity);
     gs.setLivesRemaining(Infinity);
     gs.setHintRemaining(Infinity);
     gs.setCardsLimit(10);
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
-    gs.setHintStrategy(HintStrategies.SortLetters);
+    gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
     gs.setQuestionIsFront(Math.random() > 0.5);
   }
@@ -177,12 +177,12 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupLivesMode() {
-    gs.setTimeLimit(Infinity);
+    gs.setTime(Infinity);
     gs.setLivesRemaining(3);
     gs.setHintRemaining(3);
     gs.setCardsLimit(Infinity);
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
-    gs.setHintStrategy(HintStrategies.SortLetters);
+    gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
     gs.setQuestionIsFront(true);
   }
@@ -192,12 +192,12 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupTimedMode() {
-    gs.setTimeLimit(180);
+    gs.setTime(180);
     gs.setLivesRemaining(Infinity);
     gs.setHintRemaining(Infinity);
     gs.setCardsLimit(Infinity);
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
-    gs.setHintStrategy(HintStrategies.SortLetters);
+    gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
     gs.setQuestionIsFront(true);
   }
@@ -209,21 +209,21 @@ export class SettingsScene extends Scene {
   private setupRandomMode() {
     const random = createRandomNumbers();
     const getVal = (v: number) =>
-      (v < random.length ? random[v] : random[0]) ?? 0;
+      (v < random.length ? random[v] : random[0]) || 0;
     let timeLimit = getVal(0) < 5 ? 180 : Infinity;
     if (timeLimit !== Infinity) {
       timeLimit = getVal(1) < 5 ? 180 : 600;
     }
-    gs.setTimeLimit(timeLimit);
-    gs.setLivesRemaining(getVal(2) ?? Infinity);
-    gs.setHintRemaining(getVal(3) ?? Infinity);
+    gs.setTime(timeLimit);
+    gs.setLivesRemaining(getVal(2) || Infinity);
+    gs.setHintRemaining(getVal(3) || Infinity);
     let nbCards = getVal(4) * 4 || 10;
     if (timeLimit !== Infinity && getVal(4) % 2) {
       nbCards = Infinity;
     }
     gs.setCardsLimit(nbCards);
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
-    gs.setHintStrategy(HintStrategies.SortLetters);
+    gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
     gs.setQuestionIsFront(getVal(0) < 5);
   }
@@ -247,7 +247,7 @@ export class SettingsScene extends Scene {
     this.setContent("choices", this.formatList(timesTexts, firstChoice));
     const selectedChangeCb = (choices: string[]) => {
       this.setContent("question", `choices: ${choices[0]}`);
-      gs.setTimeLimit(times[choices[0]!] ?? Infinity);
+      gs.setTime(times[choices[0]!] ?? Infinity);
       this.clearQuestion();
       gs.setPauseStream(false);
       listSelect.unListen();

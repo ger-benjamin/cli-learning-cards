@@ -24,8 +24,7 @@ class GameState {
   private sourceJson: SourceJson | null = null;
   private gameMode: GameMode | null = null;
   private cardsLimit: number | null = null;
-  private timeElapsed = 0;
-  private timeLimit: number | null = null;
+  private time: number | null = null;
   private hintRemaining: number | null = null;
   private livesRemaining: number | null = null;
   private questionIsFront = true;
@@ -63,20 +62,12 @@ class GameState {
     this.gameMode = value;
   }
 
-  getTimeElapsed(): number {
-    return this.timeElapsed;
+  getTime(): number | null {
+    return this.time;
   }
 
-  setTimeElapsed(value: number) {
-    this.timeElapsed = value;
-  }
-
-  getTimeLimit(): number | null {
-    return this.timeLimit;
-  }
-
-  setTimeLimit(value: number) {
-    this.timeLimit = value;
+  setTime(value: number) {
+    this.time = value;
   }
 
   getHintRemaining(): number | null {
