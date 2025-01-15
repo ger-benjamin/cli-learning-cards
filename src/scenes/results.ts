@@ -15,13 +15,19 @@ export class ResultsScene extends Scene {
 
   constructor() {
     super();
+    this.content.set("head", "");
     this.content.set("title", "");
     this.content.set("section", "");
   }
 
   override start() {
     this.clear();
-    const section = this.getResults(gs.getSelectedItems());
+    if ((gs.getLivesRemaining() ?? -1) > 0) {
+      this.setContent("head", "Well done !", false);
+    } else {
+      this.setContent("head", "Game over :-(", false);
+    }
+    const section = this.getResults();
     section.push("");
     section.push("Do you want to save the results (y/n) ?");
     this.setContent("section", section.join("\n"));
@@ -39,7 +45,8 @@ export class ResultsScene extends Scene {
   /**
    * Prints a summary of results.
    */
-  getResults(items: Item[]): string[] {
+  getResults(): string[] {
+    const items = gs.getAnswers().map((answer) => answer.item);
     const mastered = items.filter((item) => item.errors_last === 0);
     const toRevise = items.filter((item) => item.errors_last !== 0);
     this.content.set(
@@ -73,7 +80,7 @@ Results:
   private printOneResult(item: Item, section: string[]) {
     const expectedPossibilities = getSideTexts(gs.getSideB(item));
     const answers = gs.getAnswers();
-    const answerItem = answers.find((answer) => item.id === answer.id);
+    const answerItem = answers.find((answer) => item.id === answer.item.id);
     if (!answerItem) {
       return;
     }
@@ -104,12 +111,14 @@ Results:
       this.setContent("title", card);
       return;
     }
-    const revisedItemsIds = gs.getSelectedItems().map((item) => item.id);
+    const answers = gs.getAnswers();
+    const revisedItems = answers.map((answer) => answer.item);
+    const revisedItemsIds = revisedItems.map((item) => item.id);
     const notRevisedItems =
       gs
         .getSourceJson()
         ?.items.filter((item) => !revisedItemsIds.includes(item.id)) ?? [];
-    const newItems = [...gs.getSelectedItems(), ...notRevisedItems];
+    const newItems = [...revisedItems, ...notRevisedItems];
     try {
       writeFileSync(
         gs.getSourcePath(),

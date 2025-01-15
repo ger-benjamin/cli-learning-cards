@@ -1,5 +1,5 @@
 import readline from "node:readline";
-import { stdout } from "node:process";
+import { stdout, stdin } from "node:process";
 import gs from "../game-state.js";
 import { GameStateScene } from "../enums.js";
 
@@ -8,10 +8,26 @@ import { GameStateScene } from "../enums.js";
  */
 export abstract class Scene {
   protected readonly content: Map<string, string> = new Map<string, string>();
+  private readonly onKeypress: (letter: string, key: unknown) => void;
+  protected readonly rl: readline.Interface;
   protected tWidth: number;
 
   protected constructor() {
-    this.tWidth = process.stdout.columns;
+    this.rl = readline.createInterface({
+      input: stdin,
+      output: stdout,
+    });
+    this.tWidth = stdout.columns;
+    this.onKeypress = (letter) => {
+      if (!letter) {
+        return;
+      }
+      //stdout.clearLine(0);
+      //console.log(this.rl.line);
+      this.clear();
+      this.render();
+    };
+    stdin.on("keypress", this.onKeypress);
   }
 
   /**
@@ -39,6 +55,7 @@ export abstract class Scene {
         console.log(entry);
       }
     });
+    console.log(this.rl.line);
   }
 
   /**
@@ -66,6 +83,8 @@ export abstract class Scene {
    * On scene exit, activate another scene.
    */
   exit(nextScene: GameStateScene) {
+    stdin.off("keypress", this.onKeypress);
+    this.rl.close();
     gs.setActiveScene(nextScene);
   }
 }

@@ -44,10 +44,7 @@ npm start
 ```
 
 ## Next steps
- * Add a true scene for results.
- * Add a true scene for settings.
  * Add a "help" scene.
- * Add a "exist" scene.
  * Add colors.
  * Add a possibility to select the "select card" strategy.
  * Add a possibility to start up with a configuration (args)

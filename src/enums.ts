@@ -9,18 +9,18 @@ export const enum GameStateScene {
 
 /** Possible Correction strategies. */
 export enum CorrectionStrategies {
-  Simple = "simple",
+  Simple = "Simple",
 }
 
 /** Possible get hint strategies. */
 export enum HintStrategies {
-  SortLetters = "sortLetters",
-  SomeWords = "someWords",
+  SortLetters = "Sort letters",
+  SomeWords = "Some words",
 }
 
 /** Possible Selection strategies. */
 export enum SelectionStrategies {
-  RevisionDate = "Revision_date",
+  RevisionDate = "Revision date",
   Random = "Random",
 }
 
