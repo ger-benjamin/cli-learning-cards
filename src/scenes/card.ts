@@ -140,9 +140,10 @@ export class CardScene extends Scene {
       userAnswer,
       item: this.item,
     });
-    this.item.revision_count++;
     this.item.last_revision = this.now;
-    if (!isCorrect) {
+    if (isCorrect) {
+      this.item.revision_count++;
+    } else {
       this.item.errors_total++;
       this.item.errors_last++;
     }

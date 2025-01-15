@@ -22,7 +22,9 @@ describe("json-to-source", () => {
         back: { main: "testBackMain" },
       },
     };
-    expect(() => fromAnyItemToItem(anyItem, 0)).toThrowError("source json");
+    expect(() => fromAnyItemToItem(anyItem, 0)).toThrowError(
+      "Error parsing source",
+    );
   });
 
   test("fromAnyItemToItem minimalistic input", () => {

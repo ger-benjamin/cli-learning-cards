@@ -184,7 +184,7 @@ export class SettingsScene extends Scene {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
-    gs.setQuestionIsFront(true);
+    gs.setQuestionIsFront(Math.random() > 0.5);
   }
 
   /**
@@ -199,7 +199,7 @@ export class SettingsScene extends Scene {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
-    gs.setQuestionIsFront(true);
+    gs.setQuestionIsFront(Math.random() > 0.5);
   }
 
   /**
@@ -224,7 +224,7 @@ export class SettingsScene extends Scene {
     gs.setCardsLimit(nbCards);
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
-    gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
+    gs.setSelectionStrategy(SelectionStrategies.Random);
     gs.setQuestionIsFront(getVal(0) < 5);
   }
 

@@ -6,6 +6,7 @@ import { getSideTexts } from "../utils.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { GameStateScene } from "../enums.js";
+import { fromAnyItemToItem } from "../json-to-source.js";
 
 /**
  * A UI for results.
@@ -47,8 +48,12 @@ export class ResultsScene extends Scene {
    */
   getResults(): string[] {
     const items = gs.getAnswers().map((answer) => answer.item);
-    const mastered = items.filter((item) => item.errors_last === 0);
-    const toRevise = items.filter((item) => item.errors_last !== 0);
+    const mastered = this.getUniqueItems(
+      items.filter((item) => item.errors_last === 0),
+    );
+    const toRevise = this.getUniqueItems(
+      items.filter((item) => item.errors_last !== 0),
+    );
     this.content.set(
       "title",
       `
@@ -71,6 +76,21 @@ Results:
       });
     }
     return section;
+  }
+
+  private getUniqueItems(items: Item[]): Item[] {
+    const uniqItems = new Map<string, Item>();
+    items.forEach((item) => {
+      const existingItem = uniqItems.get(item.id);
+      if (existingItem) {
+        if (existingItem.last_revision < item.last_revision) {
+          uniqItems.set(item.id, item);
+        }
+      } else {
+        uniqItems.set(item.id, item);
+      }
+    });
+    return [...uniqItems.values()];
   }
 
   /**
@@ -112,7 +132,9 @@ Results:
       return;
     }
     const answers = gs.getAnswers();
-    const revisedItems = answers.map((answer) => answer.item);
+    const revisedItems = this.getUniqueItems(
+      answers.map((answer) => answer.item),
+    );
     const revisedItemsIds = revisedItems.map((item) => item.id);
     const notRevisedItems =
       gs
@@ -120,6 +142,7 @@ Results:
         ?.items.filter((item) => !revisedItemsIds.includes(item.id)) ?? [];
     const newItems = [...revisedItems, ...notRevisedItems];
     try {
+      this.checkBeforeWrite(newItems);
       writeFileSync(
         gs.getSourcePath(),
         JSON.stringify({ items: newItems }, null, 2),
@@ -129,10 +152,28 @@ Results:
         },
       );
     } catch (error) {
-      gs.setError((error as Error).message);
+      const msg = (error as Error).message;
+      gs.setError(`Can't save results: ${msg}`);
       return;
     }
     const card = drawCard(["Results saved!"], getCardWidth(this.tWidth));
     this.setContent("title", card);
+  }
+
+  /**
+   * Checks if the items to save are valid (uniq any and valid content).
+   * Checks only, don't modify any item here.
+   * Throw error if not valid.
+   * @private
+   */
+  private checkBeforeWrite(itemsToCheck: Item[]) {
+    const itemIds = new Set<string>();
+    itemsToCheck.forEach((item, index) => {
+      if (itemIds.has(item.id)) {
+        throw new Error("Duplicated item id");
+      }
+      itemIds.add(item.id);
+      fromAnyItemToItem(item, index);
+    });
   }
 }
