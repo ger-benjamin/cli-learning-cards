@@ -7,33 +7,26 @@ import { GameStateScene } from "../enums.js";
  * Abstract scene - or UI - to handle user input and render texts.
  */
 export abstract class Scene {
+  protected rl?: readline.Interface;
+  protected onKeypress?: (letter: string, key: unknown) => void;
   protected readonly content: Map<string, string> = new Map<string, string>();
-  private readonly onKeypress: (letter: string, key: unknown) => void;
-  protected readonly rl: readline.Interface;
   protected tWidth: number;
+  protected canWrite = true;
+  protected terminated = false;
 
   protected constructor() {
-    this.rl = readline.createInterface({
-      input: stdin,
-      output: stdout,
-    });
     this.tWidth = stdout.columns;
-    this.onKeypress = (letter) => {
-      if (!letter) {
-        return;
-      }
-      //stdout.clearLine(0);
-      //console.log(this.rl.line);
-      this.clear();
-      this.render();
-    };
-    stdin.on("keypress", this.onKeypress);
   }
 
   /**
    * On scene starts, clear the terminal and render the (new) content.
    */
   start() {
+    this.rl = readline.createInterface({
+      input: stdin,
+      output: stdout,
+    });
+    this.listenToKeypress();
     this.clear();
     this.render();
   }
@@ -55,7 +48,13 @@ export abstract class Scene {
         console.log(entry);
       }
     });
-    console.log(this.rl.line);
+    if (!this.rl || !this.canWrite) {
+      return;
+    }
+    const caret = "\x1b[32m_\x1b[0m";
+    const chars = this.rl.line.split("");
+    chars.splice(this.rl.cursor, 0, caret);
+    console.log(chars.join(""));
   }
 
   /**
@@ -83,8 +82,39 @@ export abstract class Scene {
    * On scene exit, activate another scene.
    */
   exit(nextScene: GameStateScene) {
-    stdin.off("keypress", this.onKeypress);
-    this.rl.close();
+    this.terminated = true;
+    this.stopListeningToKeypress();
+    if (this.rl) {
+      this.rl.close();
+    }
     gs.setActiveScene(nextScene);
+  }
+
+  protected listenToKeypress() {
+    if (!this.onKeypress) {
+      this.setupKeyPress();
+    }
+    stdin.on("keypress", this.onKeypress!);
+  }
+
+  protected stopListeningToKeypress() {
+    if (this.onKeypress) {
+      stdin.off("keypress", this.onKeypress);
+    }
+  }
+
+  protected setupKeyPress() {
+    this.onKeypress = (letter, key: any) => {
+      if (this.terminated) {
+        return;
+      }
+      if (!letter && key.name !== "left" && key.name !== "right") {
+        return;
+      }
+      readline.cursorTo(stdout, 0, 0);
+      readline.clearLine(stdout, 0);
+      this.clear();
+      this.render();
+    };
   }
 }

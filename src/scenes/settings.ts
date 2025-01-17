@@ -20,6 +20,7 @@ export class SettingsScene extends Scene {
 
   constructor() {
     super();
+    this.canWrite = false;
     this.content.set("load", "Loadings...");
     this.content.set("question", "");
     this.content.set("choices", "");
@@ -86,28 +87,6 @@ export class SettingsScene extends Scene {
   }
 
   /**
-   * Show a list of available "GameMode"s and allow the user to select one of them.
-   * @private
-   */
-  private askGameMode() {
-    gs.setPauseStream(true);
-    this.setContent("question", "What kind of game do you want to play?", true);
-    const modes = Object.values(GameMode);
-    this.setContent("choices", this.formatList(modes, modes[0] as string));
-    const selectedChangeCb = (choices: string[]) => {
-      gs.setGameMode(choices[0] as GameMode);
-      this.clearQuestion();
-      gs.setPauseStream(false);
-      listSelect.unListen();
-      this.readLine(this.noAnswer);
-    };
-    const cursorMoveCb = (choice: string) => {
-      this.setContent("choices", this.formatList(modes, choice));
-    };
-    listSelect.listen(modes, selectedChangeCb, cursorMoveCb);
-  }
-
-  /**
    * Setup settings-predefined mode (default is random)
    * @private
    */
@@ -134,19 +113,19 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupFreeMode(answer: string) {
-    if (!gs.getTime()) {
+    if (gs.getTime() === null) {
       this.askAmountOfTime();
       return;
     }
-    if (!gs.getLivesRemaining()) {
+    if (gs.getLivesRemaining() === null) {
       this.askNumberOfLives(answer);
       return;
     }
-    if (!gs.getHintRemaining()) {
+    if (gs.getHintRemaining() === null) {
       this.askNumberOfHints(answer);
       return;
     }
-    if (!gs.getCardsLimit()) {
+    if (gs.getCardsLimit() === null) {
       this.askNumberCards(answer);
       return;
     }
@@ -229,6 +208,28 @@ export class SettingsScene extends Scene {
   }
 
   /**
+   * Show a list of available "GameMode"s and allow the user to select one of them.
+   * @private
+   */
+  private askGameMode() {
+    gs.setPauseStream(true);
+    this.setContent("question", "What kind of game do you want to play?", true);
+    const modes = Object.values(GameMode);
+    this.setContent("choices", this.formatList(modes, modes[0] as string));
+    const selectedChangeCb = (choices: string[]) => {
+      gs.setGameMode(choices[0] as GameMode);
+      this.clearQuestion();
+      gs.setPauseStream(false);
+      listSelect.unListen();
+      this.readLine(this.noAnswer);
+    };
+    const cursorMoveCb = (choice: string) => {
+      this.setContent("choices", this.formatList(modes, choice));
+    };
+    listSelect.listen(modes, selectedChangeCb, cursorMoveCb);
+  }
+
+  /**
    * Show a list of available time limits settings and allow the user to select one of them.
    * @private
    */
@@ -264,6 +265,13 @@ export class SettingsScene extends Scene {
    * @private
    */
   private askNumberOfLives(answer: string) {
+    const exitQuestion = (lives: number) => {
+      this.clearQuestion();
+      gs.setLivesRemaining(lives);
+      this.canWrite = false;
+      this.readLine(this.noAnswer);
+    };
+    this.canWrite = true;
     const defaultNb = 3;
     const question = `How many lives do you want ? (default: ${defaultNb})`;
     this.setContent("question", question);
@@ -271,8 +279,7 @@ export class SettingsScene extends Scene {
       return;
     }
     if (answer === "") {
-      gs.setLivesRemaining(defaultNb);
-      this.readLine(this.noAnswer);
+      exitQuestion(defaultNb);
       return;
     }
     const lives = parseInt(answer);
@@ -283,9 +290,7 @@ export class SettingsScene extends Scene {
       );
       return;
     }
-    this.clearQuestion();
-    gs.setLivesRemaining(lives);
-    this.readLine(this.noAnswer);
+    exitQuestion(lives);
   }
 
   /**
@@ -293,6 +298,13 @@ export class SettingsScene extends Scene {
    * @private
    */
   private askNumberOfHints(answer: string) {
+    const exitQuestion = (hints: number) => {
+      this.clearQuestion();
+      gs.setHintRemaining(hints);
+      this.canWrite = false;
+      this.readLine(this.noAnswer);
+    };
+    this.canWrite = true;
     const defaultNb = 5;
     const question = `How many hints do you want ? (default: ${defaultNb})`;
     this.setContent("question", question);
@@ -300,8 +312,7 @@ export class SettingsScene extends Scene {
       return;
     }
     if (answer === "") {
-      gs.setHintRemaining(defaultNb);
-      this.readLine(this.noAnswer);
+      exitQuestion(defaultNb);
       return;
     }
     const hints = parseInt(answer);
@@ -309,9 +320,7 @@ export class SettingsScene extends Scene {
       this.setContent("info", "Please write a valid natural number.");
       return;
     }
-    this.clearQuestion();
-    gs.setHintRemaining(hints);
-    this.readLine(this.noAnswer);
+    exitQuestion(hints);
   }
 
   /**
@@ -319,6 +328,13 @@ export class SettingsScene extends Scene {
    * @private
    */
   private askNumberCards(answer: string) {
+    const exitQuestion = (cards: number) => {
+      this.clearQuestion();
+      gs.setCardsLimit(cards);
+      this.canWrite = false;
+      this.readLine(this.noAnswer);
+    };
+    this.canWrite = true;
     const defaultNb = 10;
     const max = gs.getSourceJson()?.items?.length ?? -1;
     const question = `How many cards do you want to train? (default ${defaultNb}, max ${max})`;
@@ -327,8 +343,7 @@ export class SettingsScene extends Scene {
       return;
     }
     if (answer === "") {
-      gs.setCardsLimit(defaultNb);
-      this.readLine(this.noAnswer);
+      exitQuestion(defaultNb);
       return;
     }
     const cardsLimit = parseInt(answer);
@@ -339,9 +354,7 @@ export class SettingsScene extends Scene {
       );
       return;
     }
-    this.clearQuestion();
-    gs.setCardsLimit(cardsLimit);
-    this.readLine(this.noAnswer);
+    exitQuestion(cardsLimit);
   }
 
   /**

@@ -23,12 +23,12 @@ export class CliLearningCards {
 
   constructor(sourcePath: URL) {
     this.rl = createInterface({ input: stdin, output: stdout });
-    this.rl.setPrompt("");
     gs.setSourcePath(sourcePath);
     gs.getActiveScene().on("change", (scene: GameStateScene) => {
       this.setScene(scene);
     });
     gs.setActiveScene(GameStateScene.SPLASH_SCREEN);
+    this.setPrompt();
   }
 
   /**
@@ -42,6 +42,7 @@ export class CliLearningCards {
         }
       })
       .on("close", () => {
+        process.stdout.write("\x1B[?25h"); // Show again the cursor !
         process.exit(0);
       });
   }
@@ -54,10 +55,16 @@ export class CliLearningCards {
   }
 
   /**
-   * Start the read-line stram and the questions processes.
+   * Start the read-line stream and the questions processes.
    */
   run() {
     this.startStream();
+  }
+
+  private setPrompt() {
+    this.rl.setPrompt("");
+    this.rl.prompt();
+    process.stdout.write("\x1B[?25l"); // Hide the cursor.
   }
 
   /**
