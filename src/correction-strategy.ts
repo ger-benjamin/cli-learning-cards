@@ -1,6 +1,5 @@
 import type { Item } from "./source-json.js";
-import { getSideTexts } from "./utils.js";
-import lowerFirst from "lodash/lowerFirst.js";
+import { getSideTexts, lowerFirst } from "./utils.js";
 import gs from "./game-state.js";
 
 /**

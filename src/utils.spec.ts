@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { getOneSideText, getSideTexts } from "./utils.js";
+import { getOneSideText, getSideTexts, lowerFirst } from "./utils.js";
 import { generateTestItems } from "./test-data.js";
 
 describe("utils", () => {
@@ -27,5 +27,10 @@ describe("utils", () => {
     expect(result).not.toBe("ccccc");
     expect(result).not.toBe("ddddd");
     expect(result).not.toBe("eeeee");
+  });
+
+  test("lowerFirst", () => {
+    expect(lowerFirst("Toto Tata")).toBe("toto Tata");
+    expect(lowerFirst("cECI")).toBe("cECI");
   });
 });

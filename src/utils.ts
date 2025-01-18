@@ -23,3 +23,10 @@ export const createRandomNumbers = (): number[] => {
   const textNumbers = Math.random().toString().slice(2);
   return textNumbers.split("").map((nb) => parseInt(nb));
 };
+
+/**
+ * @returns the same text, but with the first letter lowercased.
+ */
+export const lowerFirst = (str: string): string => {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+};
