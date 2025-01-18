@@ -14,16 +14,13 @@ import { GameStateScene } from "./enums.js";
 
 /**
  * Cli Learning cards main process.
- * Read source, ask number of element to revise, prompt
- * card and handle answers.
  */
 export class CliLearningCards {
   private rl: readline.Interface;
   private scene?: Scene;
 
   constructor(sourcePath: URL) {
-    this.rl = createInterface({ input: stdin, output: stdout });
-    this.rl.setPrompt("");
+    this.rl = createInterface({ input: stdin, output: stdout, prompt: "" });
     gs.setSourcePath(sourcePath);
     gs.getActiveScene().on("change", (scene: GameStateScene) => {
       this.setScene(scene);
@@ -33,8 +30,10 @@ export class CliLearningCards {
 
   /**
    * Initialize the readline stream.
+   * Hide the cursor on run.
    */
   startStream() {
+    process.stdout.write("\x1B[?25l"); // Hide the cursor.
     this.rl
       .on("line", (line) => {
         if (!gs.getPauseStream()) {
@@ -42,6 +41,7 @@ export class CliLearningCards {
         }
       })
       .on("close", () => {
+        process.stdout.write("\x1B[?25h"); // Show again the cursor !
         process.exit(0);
       });
   }
@@ -54,7 +54,7 @@ export class CliLearningCards {
   }
 
   /**
-   * Start the read-line stram and the questions processes.
+   * Start the read-line stream and the questions processes.
    */
   run() {
     this.startStream();

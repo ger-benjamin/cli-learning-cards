@@ -10,6 +10,7 @@ import { GameStateScene } from "../enums.js";
 export class ExitScene extends Scene {
   constructor() {
     super();
+    this.canWrite = false;
     const card = drawCard(["Bye o/"], getCardWidth(this.tWidth));
     this.content.set("all", card);
   }

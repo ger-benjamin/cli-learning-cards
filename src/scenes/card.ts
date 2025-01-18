@@ -34,6 +34,10 @@ export class CardScene extends Scene {
     this.content.set("game", "");
     this.content.set("card", "");
     this.content.set("info", "");
+  }
+
+  override start() {
+    super.start();
     const item = this.selectItem();
     if (!item) {
       gs.setError("No item found.");
@@ -42,13 +46,17 @@ export class CardScene extends Scene {
     }
     this.item = item;
     this.showQuestion(this.item, this.hint);
-  }
-
-  override start() {
-    super.start();
     if (gs.getTime() !== Infinity) {
       this.debounceCountDown();
     }
+  }
+
+  /**
+   * Exit to next scene and cancel debounce.
+   */
+  override exit(scene: GameStateScene) {
+    this.debounceCountDown.cancel();
+    super.exit(scene);
   }
 
   /**
@@ -140,9 +148,10 @@ export class CardScene extends Scene {
       userAnswer,
       item: this.item,
     });
-    this.item.revision_count++;
     this.item.last_revision = this.now;
-    if (!isCorrect) {
+    if (isCorrect) {
+      this.item.revision_count++;
+    } else {
       this.item.errors_total++;
       this.item.errors_last++;
     }

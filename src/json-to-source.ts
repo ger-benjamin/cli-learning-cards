@@ -30,7 +30,7 @@ export const fromAnyItemToItem = (
   const backMain = anyBack?.main;
   if (!id || !frontMain || !backMain) {
     throw new Error(
-      `Error reading source json, item without id (${id}) or text. Index: ${index}.`,
+      `Error parsing source, item without id (${id}) or text. Index: ${index}.`,
     );
   }
   const front = {

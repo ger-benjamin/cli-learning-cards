@@ -7,15 +7,25 @@ import { GameStateScene } from "../enums.js";
  * A nice splash screen to welcome the user.
  */
 export class SplashScreenScene extends Scene {
+  private readonly nextScene: GameStateScene;
+
   constructor(nextScene: GameStateScene) {
     super();
-    process.stdin.once("keypress", (/*letter, key*/) => {
-      this.exit(nextScene);
+    this.nextScene = nextScene;
+    this.canWrite = false;
+  }
+
+  override start() {
+    process.stdin.once("keypress", (_letter, key) => {
+      if (key.name === "return" || key.name === "enter") {
+        this.exit(this.nextScene);
+      }
     });
     const card = drawCard(
       ["Cli-learning-cards", "--Press enter--"],
       getCardWidth(this.tWidth),
     );
-    this.content.set("all", card);
+    this.setContent("all", card, true);
+    super.start();
   }
 }

@@ -5,35 +5,31 @@ import { GameStateScene } from "../enums.js";
 
 /**
  * Abstract scene - or UI - to handle user input and render texts.
+ * Clear the auto-output of inputs (line writing) to be more flexible.
+ * on the rendering (can write line below, can freely update rendering, etc.).
  */
 export abstract class Scene {
+  protected rl?: readline.Interface;
+  protected onKeypress?: (letter: string, key: unknown) => void;
   protected readonly content: Map<string, string> = new Map<string, string>();
-  private readonly onKeypress: (letter: string, key: unknown) => void;
-  protected readonly rl: readline.Interface;
   protected tWidth: number;
+  protected canWrite = true;
+  protected terminated = false;
 
   protected constructor() {
-    this.rl = readline.createInterface({
-      input: stdin,
-      output: stdout,
-    });
     this.tWidth = stdout.columns;
-    this.onKeypress = (letter) => {
-      if (!letter) {
-        return;
-      }
-      //stdout.clearLine(0);
-      //console.log(this.rl.line);
-      this.clear();
-      this.render();
-    };
-    stdin.on("keypress", this.onKeypress);
   }
 
   /**
    * On scene starts, clear the terminal and render the (new) content.
+   * Starts to listen to keypress to handle manually inputs.
    */
   start() {
+    this.rl = readline.createInterface({
+      input: stdin,
+      output: stdout,
+    });
+    this.listenToKeypress();
     this.clear();
     this.render();
   }
@@ -48,6 +44,7 @@ export abstract class Scene {
 
   /**
    * Loops on the content to render it.
+   * Render also the writing line manually to be more flexible.
    */
   render() {
     this.content.forEach((entry) => {
@@ -55,7 +52,14 @@ export abstract class Scene {
         console.log(entry);
       }
     });
-    console.log(this.rl.line);
+    if (!this.rl || !this.canWrite) {
+      return;
+    }
+    // If we can write, set the caret at the cursor position.
+    const caret = "\x1b[32m_\x1b[0m";
+    const chars = this.rl.line.split("");
+    chars.splice(this.rl.cursor, 0, caret);
+    console.log(chars.join(""));
   }
 
   /**
@@ -83,8 +87,55 @@ export abstract class Scene {
    * On scene exit, activate another scene.
    */
   exit(nextScene: GameStateScene) {
-    stdin.off("keypress", this.onKeypress);
-    this.rl.close();
+    this.terminated = true;
+    this.stopListeningToKeypress();
+    if (this.rl) {
+      this.rl.close();
+    }
     gs.setActiveScene(nextScene);
+  }
+
+  /**
+   * Starts listening to keypress to restore and show writen line.
+   * Must be called on start.
+   * @protected
+   */
+  protected listenToKeypress() {
+    if (!this.onKeypress) {
+      this.setupKeyPress();
+    }
+    stdin.on("keypress", this.onKeypress!);
+  }
+
+  /**
+   * Stop listing to keypress.
+   * ust be called on destroy.
+   * @protected
+   */
+  protected stopListeningToKeypress() {
+    if (this.onKeypress) {
+      stdin.off("keypress", this.onKeypress);
+    }
+  }
+
+  /**
+   * Setup keypress listener to handle typing and cursor move.
+   * @protected
+   */
+  protected setupKeyPress() {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    this.onKeypress = (letter, key: any) => {
+      if (this.terminated) {
+        // Workaround to be sure input are not listened once terminated.
+        return;
+      }
+      if (!letter && key.name !== "left" && key.name !== "right") {
+        return;
+      }
+      readline.cursorTo(stdout, 0, 0);
+      readline.clearLine(stdout, 0);
+      this.clear();
+      this.render();
+    };
   }
 }
