@@ -52,6 +52,14 @@ export class CardScene extends Scene {
   }
 
   /**
+   * Exit to next scene and cancel debounce.
+   */
+  override exit(scene: GameStateScene) {
+    this.debounceCountDown.cancel();
+    super.exit(scene);
+  }
+
+  /**
    * Set the displayed content.
    * @param item The base item to show.
    * @param hint If the hint should be displayed or not.

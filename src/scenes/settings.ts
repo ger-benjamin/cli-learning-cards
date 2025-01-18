@@ -218,10 +218,7 @@ export class SettingsScene extends Scene {
     this.setContent("choices", this.formatList(modes, modes[0] as string));
     const selectedChangeCb = (choices: string[]) => {
       gs.setGameMode(choices[0] as GameMode);
-      this.clearQuestion();
-      gs.setPauseStream(false);
-      listSelect.unListen();
-      this.readLine(this.noAnswer);
+      this.exitQuestionCommon();
     };
     const cursorMoveCb = (choice: string) => {
       this.setContent("choices", this.formatList(modes, choice));
@@ -247,12 +244,8 @@ export class SettingsScene extends Scene {
     const firstChoice = timesTexts[0]!;
     this.setContent("choices", this.formatList(timesTexts, firstChoice));
     const selectedChangeCb = (choices: string[]) => {
-      this.setContent("question", `choices: ${choices[0]}`);
       gs.setTime(times[choices[0]!] ?? Infinity);
-      this.clearQuestion();
-      gs.setPauseStream(false);
-      listSelect.unListen();
-      this.readLine(this.noAnswer);
+      this.exitQuestionCommon();
     };
     const cursorMoveCb = (choice: string) => {
       this.setContent("choices", this.formatList(timesTexts, choice));
@@ -266,10 +259,8 @@ export class SettingsScene extends Scene {
    */
   private askNumberOfLives(answer: string) {
     const exitQuestion = (lives: number) => {
-      this.clearQuestion();
       gs.setLivesRemaining(lives);
-      this.canWrite = false;
-      this.readLine(this.noAnswer);
+      this.exitQuestionCommon();
     };
     this.canWrite = true;
     const defaultNb = 3;
@@ -299,10 +290,8 @@ export class SettingsScene extends Scene {
    */
   private askNumberOfHints(answer: string) {
     const exitQuestion = (hints: number) => {
-      this.clearQuestion();
       gs.setHintRemaining(hints);
-      this.canWrite = false;
-      this.readLine(this.noAnswer);
+      this.exitQuestionCommon();
     };
     this.canWrite = true;
     const defaultNb = 5;
@@ -329,10 +318,8 @@ export class SettingsScene extends Scene {
    */
   private askNumberCards(answer: string) {
     const exitQuestion = (cards: number) => {
-      this.clearQuestion();
       gs.setCardsLimit(cards);
-      this.canWrite = false;
-      this.readLine(this.noAnswer);
+      this.exitQuestionCommon();
     };
     this.canWrite = true;
     const defaultNb = 10;
@@ -355,6 +342,18 @@ export class SettingsScene extends Scene {
       return;
     }
     exitQuestion(cardsLimit);
+  }
+
+  /**
+   * Reset question and prepare for the next one.
+   * @private
+   */
+  private exitQuestionCommon() {
+    this.clearQuestion();
+    this.canWrite = false;
+    gs.setPauseStream(false);
+    listSelect.unListen();
+    this.readLine(this.noAnswer);
   }
 
   /**

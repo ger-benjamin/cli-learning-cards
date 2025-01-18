@@ -22,6 +22,7 @@ export class ResultsScene extends Scene {
   }
 
   override start() {
+    super.start();
     this.clear();
     if ((gs.getLivesRemaining() ?? -1) > 0) {
       this.setContent("head", "Well done !", false);
