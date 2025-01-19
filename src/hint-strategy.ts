@@ -1,6 +1,5 @@
-import sampleSize from "lodash/sampleSize.js";
 import gs from "./game-state.js";
-import { getOneSideText } from "./utils.js";
+import { getOneSideText, takeMultipleRandomly } from "./utils.js";
 import type { Item } from "./source-json.js";
 import { HintStrategies } from "./enums.js";
 
@@ -61,7 +60,7 @@ export class HintStrategy {
     // Remove some extra words.
     const wordsWithoutLongest = [...words];
     wordsWithoutLongest.splice(longerWordIndex, 1);
-    const wordsToRemove = sampleSize(
+    const wordsToRemove = takeMultipleRandomly(
       wordsWithoutLongest,
       Math.floor(wordsWithoutLongest.length / 2),
     );
