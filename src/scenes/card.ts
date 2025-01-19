@@ -8,8 +8,6 @@ import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { SelectionStrategy } from "../selection-strategy.js";
 import { GameStateScene } from "../enums.js";
-import debounce from "lodash/debounce.js";
-import type { DebouncedFunc } from "lodash";
 
 /**
  * A UI for cards questions.
@@ -19,17 +17,13 @@ export class CardScene extends Scene {
   private readonly correctionStrategy = new CorrectionStrategy();
   private readonly selectionStrategy = new SelectionStrategy();
   private readonly now = new Date();
-  private debounceCountDown: DebouncedFunc<() => void>;
+  private countDownIntervalFn: NodeJS.Timeout | null = null;
   private countDownSeconds = 5;
   private item: Item | null = null;
   private hint = false;
 
   constructor() {
     super();
-    this.debounceCountDown = debounce(
-      this.countDown,
-      this.countDownSeconds * 1000,
-    );
     this.content.set("mode", "");
     this.content.set("game", "");
     this.content.set("card", "");
@@ -47,7 +41,10 @@ export class CardScene extends Scene {
     this.item = item;
     this.showQuestion(this.item, this.hint);
     if (gs.getTime() !== Infinity) {
-      this.debounceCountDown();
+      this.countDownIntervalFn = setInterval(
+        this.countDown.bind(this),
+        this.countDownSeconds * 1000,
+      );
     }
   }
 
@@ -55,7 +52,9 @@ export class CardScene extends Scene {
    * Exit to next scene and cancel debounce.
    */
   override exit(scene: GameStateScene) {
-    this.debounceCountDown.cancel();
+    if (this.countDownIntervalFn) {
+      clearInterval(this.countDownIntervalFn);
+    }
     super.exit(scene);
   }
 
@@ -209,22 +208,20 @@ export class CardScene extends Scene {
   private countDown() {
     const time = gs.getTime() ?? 0;
     if (time <= 0) {
-      this.debounceCountDown.cancel();
       this.exit(GameStateScene.RESULTS);
       return;
     }
     gs.setTime(time - this.countDownSeconds);
     // Under a limit, re-call this function more frequently.
     if (time - this.countDownSeconds <= 15) {
-      this.debounceCountDown.cancel();
+      clearInterval(this.countDownIntervalFn!);
       this.countDownSeconds = 1;
-      this.debounceCountDown = debounce(
-        this.countDown,
+      this.countDownIntervalFn = setInterval(
+        this.countDown.bind(this),
         this.countDownSeconds * 1000,
       );
     }
     this.updateBanner();
-    this.debounceCountDown();
   }
 
   private updateBanner() {
