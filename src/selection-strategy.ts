@@ -1,7 +1,7 @@
 import type { Item } from "./source-json.js";
-import sampleSize from "lodash/sampleSize.js";
 import gs from "./game-state.js";
 import { SelectionStrategies } from "./enums.js";
+import { takeMultipleRandomly } from "./utils.js";
 
 /**
  * Get random items via a strategy.
@@ -36,6 +36,6 @@ export class SelectionStrategy {
    * @private
    */
   private selectRandomItems(items: Item[], howMany: number) {
-    return sampleSize(items, howMany);
+    return takeMultipleRandomly(items, howMany);
   }
 }

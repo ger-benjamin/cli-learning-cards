@@ -1,5 +1,11 @@
 import { expect, test, describe } from "vitest";
-import { getOneSideText, getSideTexts, lowerFirst } from "./utils.js";
+import {
+  getOneSideText,
+  getSideTexts,
+  lowerFirst,
+  takeMultipleRandomly,
+  takeOneRandomly,
+} from "./utils.js";
 import { generateTestItems } from "./test-data.js";
 
 describe("utils", () => {
@@ -32,5 +38,39 @@ describe("utils", () => {
   test("lowerFirst", () => {
     expect(lowerFirst("Toto Tata")).toBe("toto Tata");
     expect(lowerFirst("cECI")).toBe("cECI");
+  });
+
+  test("takeOneRandomly", () => {
+    let array = [0, 1, 2, 3, 4];
+    let result = takeOneRandomly(array);
+    expect(result).toBeDefined();
+    expect(array.includes(result!));
+
+    array = [1];
+    result = takeOneRandomly(array);
+    expect(result).toBe(1);
+
+    array = [];
+    result = takeOneRandomly(array);
+    expect(result).toBeUndefined();
+  });
+
+  test("takeMultipleRandomly", () => {
+    const array = [0, 1, 2, 3, 4];
+    let result = takeMultipleRandomly(array, 3);
+    expect(result).toBeDefined();
+    expect(result!.length).toBe(3);
+    const uniq = new Set(result);
+    expect(uniq.size).toBe(3);
+    result!.forEach((item) => expect(array.includes(item)));
+
+    result = takeMultipleRandomly(array, 20);
+    expect(result!.length).toBe(5);
+
+    result = takeMultipleRandomly(array, 0);
+    expect(result!.length).toBe(0);
+
+    result = takeMultipleRandomly([], 5);
+    expect(result!.length).toBe(0);
   });
 });
