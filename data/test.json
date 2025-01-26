@@ -1,0 +1,183 @@
+{
+  "items": [
+    {
+      "id": "irrelevant sein",
+      "card": {
+        "front": {
+          "main": "irrelevant sein test1",
+          "variations": []
+        },
+        "back": {
+          "main": "être sans importance test1",
+          "variations": [
+            "être hors sujet test1",
+            "être sans rapport test1",
+            "être non pertinent test1"
+          ]
+        }
+      },
+      "last_revision": "2024-01-28T18:34:53.155Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "test2",
+      "card": {
+        "front": {
+          "main": "test2",
+          "variations": []
+        },
+        "back": {
+          "main": "test2",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-01-29T18:34:53.155Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "jemanden aussprechen lassen",
+      "card": {
+        "front": {
+          "main": "jemanden aussprechen lassen",
+          "variations": [
+            "jemanden ausreden lassen"
+          ]
+        },
+        "back": {
+          "main": "laisser finir quelqu'un de parler",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-01-30T18:34:53.155Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "den Faden verlieren",
+      "card": {
+        "front": {
+          "main": "den Faden verlieren",
+          "variations": []
+        },
+        "back": {
+          "main": "perdre le fil",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-01-31T09:15:04.689Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 1,
+      "errors_total": 1
+    },
+    {
+      "id": "Worauf wollen Sie hinaus?",
+      "card": {
+        "front": {
+          "main": "Worauf wollen Sie hinaus?",
+          "variations": []
+        },
+        "back": {
+          "main": "Où voulez-vous en venir ?",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-02-01T09:08:04.789Z",
+      "categories": [],
+      "revision_count": 2,
+      "favorite_lvl": 0,
+      "errors_last": 1,
+      "errors_total": 1
+    },
+    {
+      "id": "bis zu einem bestimmten Punkt",
+      "card": {
+        "front": {
+          "main": "bis zu einem bestimmten Punkt",
+          "variations": []
+        },
+        "back": {
+          "main": "jusqu'à un certain point",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-02-02T09:08:04.789Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "Kritik äußern",
+      "card": {
+        "front": {
+          "main": "Kritik äußern",
+          "variations": []
+        },
+        "back": {
+          "main": "critiquer",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-02-03T12:25:56.074Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "mit jemandem offen sprechen",
+      "card": {
+        "front": {
+          "main": "mit jemandem offen sprechen",
+          "variations": []
+        },
+        "back": {
+          "main": "parler ouvertement à quelqu'un",
+          "variations": []
+        }
+      },
+      "last_revision": "2024-02-04T12:25:56.074Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    },
+    {
+      "id": "effizienter arbeiten",
+      "card": {
+        "front": {
+          "main": "effizienter arbeiten",
+          "variations": []
+        },
+        "back": {
+          "main": "travailler plus efficacement",
+          "variations": [
+            "travailler de manière plus efficace"
+          ]
+        }
+      },
+      "last_revision": "2024-02-05T12:25:56.074Z",
+      "categories": [],
+      "revision_count": 1,
+      "favorite_lvl": 0,
+      "errors_last": 0,
+      "errors_total": 0
+    }
+  ]
+}
