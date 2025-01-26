@@ -17,13 +17,13 @@ Add a `source.json` file with this structure in the `data` folder:
 {
   "items": [
     {
-      "id": "The money",
+      "id": "My beautiful sentence",
       "card": {
         "front": {
-          "main": "The Money",
+          "main": "My beautiful sentence"
         },
         "back": {
-          "main": "L'argent",
+          "main": "Ma belle phrase"
         }
       }
     }
@@ -46,11 +46,9 @@ npm start
 ## Next steps
  * Add a "help" scene.
  * Add colors.
- * Add a possibility to select the "select card" strategy.
+ * Add a possibility to select the strategy.
  * Add a possibility to start up with a configuration (args)
- * Add more choice, random order, time, challenge....
  * Add a possibility to edit answers.
  * Release and run it without compiling it.
  * Move to deno ?
- * Add a json schema and validate source.
  * Add import source script.

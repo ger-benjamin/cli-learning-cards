@@ -16,7 +16,7 @@ import { GameStateScene } from "./enums.js";
  * Cli Learning cards main process.
  */
 export class CliLearningCards {
-  private rl: readline.Interface;
+  private readonly rl: readline.Interface;
   private scene?: Scene;
 
   constructor(sourcePath: URL) {
@@ -58,6 +58,17 @@ export class CliLearningCards {
    */
   run() {
     this.startStream();
+  }
+
+  /**
+   * For testing purpose, ask the rl to write (same process,
+   * same rl instance to go to the listeners).
+   * Doing this by another way, like returning "rl" to let the
+   * tests calling the "write" method, doesn't work for
+   * an unknown reason.
+   */
+  write(line: string) {
+    this.rl.write(`${line}\n`);
   }
 
   /**
