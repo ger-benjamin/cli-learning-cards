@@ -52,3 +52,15 @@ npm start
  * Release and run it without compiling it.
  * Move to deno ?
  * Add import source script.
+
+## Release
+
+```
+export VERSION={put your version here}
+git checkout main
+git pull origin main
+vim package.json # change the version
+git commit -a -m "Release $VERSION"
+git tag $VERSION
+git push origin $VERSION main
+```

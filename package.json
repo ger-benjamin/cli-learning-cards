@@ -20,7 +20,7 @@
     "cards",
     "learn"
   ],
-  "author": "Benjamin Gerber",
+  "author": "Benjamin Gerber <benjamin.gerber@camptocamp.com>",
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@eslint/js": "^9.17.0",
