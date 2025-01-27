@@ -8,24 +8,39 @@ import { GameStateScene } from "../enums.js";
  */
 export class SplashScreenScene extends Scene {
   private readonly nextScene: GameStateScene;
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  private readonly onKeyPress: (letter: string, key: any) => void;
 
   constructor(nextScene: GameStateScene) {
     super();
     this.nextScene = nextScene;
     this.canWrite = false;
-  }
-
-  override start() {
-    process.stdin.once("keypress", (_letter, key) => {
+    this.onKeyPress = (_letter, key) => {
       if (key.name === "return" || key.name === "enter") {
         this.exit(this.nextScene);
       }
-    });
+    };
+  }
+
+  /**
+   * Shows the splash-screen and listen to "enter" key press to
+   * continue to the next scene.
+   */
+  override start() {
+    process.stdin.on("keypress", this.onKeyPress);
     const card = drawCard(
       ["Cli-learning-cards", "--Press enter--"],
       getCardWidth(this.tWidth),
     );
     this.setContent("all", card, true);
     super.start();
+  }
+
+  /**
+   * Exits this scene and remove the keypress listener.
+   */
+  override exit(nextScene: GameStateScene) {
+    process.stdin.off("keypress", this.onKeyPress);
+    super.exit(nextScene);
   }
 }
