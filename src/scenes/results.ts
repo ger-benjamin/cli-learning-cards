@@ -5,7 +5,11 @@ import type { Item } from "../source-json.js";
 import { getSideTexts } from "../utils.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
-import { GameStateScene } from "../enums.js";
+import {
+  GameStateScene,
+  validNegativeAnswers,
+  validPositiveAnswers,
+} from "../enums.js";
 import { fromAnyItemToItem } from "../json-to-source.js";
 
 /**
@@ -40,8 +44,7 @@ export class ResultsScene extends Scene {
       this.exit(GameStateScene.EXIT);
       return;
     }
-    this.nextIsExit = true;
-    this.saveResults(answer);
+    this.askAndSaveResults(answer);
   }
 
   /**
@@ -118,20 +121,65 @@ Results:
   }
 
   /**
-   * Update source file with results.
+   * Ask to save the results if wanted and exit.
    * @private
    */
-  saveResults(answer: string) {
+  askAndSaveResults(answer: string) {
+    const lowerAnswer = answer.toLowerCase();
     this.content.set("section", "");
     this.content.set("title", "");
-    if (!["yes", "y", "1", "true", "t"].includes(answer.toLowerCase())) {
-      const card = drawCard(
-        ["Ok, the results are left unsaved."],
-        getCardWidth(this.tWidth),
-      );
-      this.setContent("title", card);
+    // Only accept valid answers.
+    if (!this.checkAskValidAnswer(lowerAnswer)) {
       return;
     }
+    this.nextIsExit = true;
+    // Exit without saving;
+    if (!validPositiveAnswers.includes(lowerAnswer)) {
+      this.exitWithoutSaving();
+      return;
+    }
+    // Save and exit.
+    this.saveAndExit();
+  }
+
+  /**
+   * Check if it's a valid answer to the question "Do you want to save the results?"
+   * @returns true if it's a valid yes/no. False, and display and new message if it's not.
+   * @private
+   */
+  private checkAskValidAnswer(lowerAnswer: string): boolean {
+    if (
+      validNegativeAnswers.includes(lowerAnswer) ||
+      validPositiveAnswers.includes(lowerAnswer)
+    ) {
+      return true;
+    }
+    const card = drawCard(
+      ["Please answer by 'yes' or 'no'. Do you want to save the results?"],
+      getCardWidth(this.tWidth),
+    );
+    this.setContent("head", "", false);
+    this.setContent("title", card);
+    return false;
+  }
+
+  /**
+   * Prompt an exit without saving message.
+   * @private
+   */
+  private exitWithoutSaving() {
+    const card = drawCard(
+      ["Ok, the results are left unsaved."],
+      getCardWidth(this.tWidth),
+    );
+    this.setContent("title", card);
+  }
+
+  /**
+   * Validate the validity of updated items, save them (update the source file),
+   * and prompt an exit message.
+   */
+  private saveAndExit() {
     const answers = gs.getAnswers();
     const revisedItems = this.getUniqueItems(
       answers.map((answer) => answer.item),

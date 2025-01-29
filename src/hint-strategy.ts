@@ -46,7 +46,7 @@ export class HintStrategy {
       return this.sortLetters(answerText);
     }
     const toRemoveIndexes: number[] = [];
-    // Find the longest word.
+    // Find the longest word to hide it.
     let longerWordIndex = 0;
     words.forEach((word, index) => {
       if (index === 0) {
@@ -57,12 +57,12 @@ export class HintStrategy {
       }
     });
     toRemoveIndexes.push(longerWordIndex);
-    // Remove some extra words.
+    // Then remove 20% of extra words.
     const wordsWithoutLongest = [...words];
     wordsWithoutLongest.splice(longerWordIndex, 1);
     const wordsToRemove = takeMultipleRandomly(
       wordsWithoutLongest,
-      Math.floor(wordsWithoutLongest.length / 2),
+      Math.floor(wordsWithoutLongest.length / 5),
     );
     words.forEach((word, index) => {
       if (wordsToRemove.includes(word)) {

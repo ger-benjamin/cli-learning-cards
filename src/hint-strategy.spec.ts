@@ -32,7 +32,7 @@ describe("hint", () => {
     const result = strategy.getHint(item).split(" ");
     expect(result.length).toEqual(7);
     expect(result.includes("longest")).toBeFalsy();
-    expect(result.filter((word) => word === "...").length).toBe(4);
+    expect(result.filter((word) => word === "...").length).toBe(2);
     const firstRealWord = result.find((word) => word !== "...");
     expect(firstRealWord).toBeDefined();
     if (firstRealWord) {

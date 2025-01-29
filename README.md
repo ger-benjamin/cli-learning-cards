@@ -43,6 +43,8 @@ folder!
 npm start
 ```
 
+On cards, you can use the special key words "_hint", "_skip" or "_exit".
+
 ## Next steps
  * Add a "help" scene.
  * Add colors.
