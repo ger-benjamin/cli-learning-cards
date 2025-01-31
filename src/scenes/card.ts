@@ -89,7 +89,7 @@ export class CardScene extends Scene {
       return;
     }
     if (answer === "_exit") {
-      gs.setActiveScene(GameStateScene.RESULTS);
+      this.exit(GameStateScene.RESULTS);
       return;
     }
     if (answer === "_hint") {
