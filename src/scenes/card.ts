@@ -89,7 +89,7 @@ export class CardScene extends Scene {
       return;
     }
     if (answer === "_exit") {
-      gs.setActiveScene(GameStateScene.RESULTS);
+      this.exit(GameStateScene.RESULTS);
       return;
     }
     if (answer === "_hint") {
@@ -158,6 +158,7 @@ export class CardScene extends Scene {
 
   /**
    * Show next question or shows results if the number of question exceed the limit.
+   * Can change (20%) the side of the question if it's authorised.
    * @private
    */
   private nextQuestion() {
@@ -165,6 +166,10 @@ export class CardScene extends Scene {
     const item = this.selectItem();
     if (this.checkEnd(item)) {
       return;
+    }
+    // 20% chance of changing the question side if authorised.
+    if (gs.getSideOfQuestionCanChange() && Math.random() < 0.2) {
+      gs.setQuestionIsFront(!gs.getQuestionIsFront());
     }
     this.item = item!;
     this.item.errors_last = 0;

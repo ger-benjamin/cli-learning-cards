@@ -32,3 +32,8 @@ export enum GameMode {
   LIVES = "Lives",
   RANDOM = "Random",
 }
+
+/** Valid positive answers to yes or no questions. */
+export const validPositiveAnswers = ["yes", "y", "1", "true", "t"];
+/** Valid negative answers to yes or no questions. */
+export const validNegativeAnswers = ["no", "n", "0", "false", "f"];
