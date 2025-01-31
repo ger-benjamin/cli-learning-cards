@@ -113,6 +113,10 @@ export class SettingsScene extends Scene {
    * @private
    */
   private setupFreeMode(answer: string) {
+    if (gs.getQuestionIsFront() === null) {
+      this.askQuestionIsFront();
+      return;
+    }
     if (gs.getTime() === null) {
       this.askAmountOfTime();
       return;
@@ -132,12 +136,11 @@ export class SettingsScene extends Scene {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
-    gs.setQuestionIsFront(Math.random() > 0.5);
     this.exit(GameStateScene.CARD);
   }
 
   /**
-   * Set up the 10-cards quick mode (no time limit, no life limit).
+   * Set up the 10-cards quick mode (no time limit, no life limit, keep selected side).
    * @private
    */
   private setupTenMode() {
@@ -152,7 +155,7 @@ export class SettingsScene extends Scene {
   }
 
   /**
-   * Set up the 3-lives quick mode (no time limit, no cards limits).
+   * Set up the 3-lives quick mode (no time limit, no cards limits, changing side).
    * @private
    */
   private setupLivesMode() {
@@ -163,11 +166,12 @@ export class SettingsScene extends Scene {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
-    gs.setQuestionIsFront(Math.random() > 0.5);
+    gs.setQuestionIsFront(true);
+    gs.setSideOfQuestionCanChange(true);
   }
 
   /**
-   * Set up the time quick mode (3 minutes, no life limit, no cards limits).
+   * Set up the time quick mode (3 minutes, no life limit, no cards limits, changing side).
    * @private
    */
   private setupTimedMode() {
@@ -178,7 +182,8 @@ export class SettingsScene extends Scene {
     gs.setCorrectionStrategy(CorrectionStrategies.Simple);
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.RevisionDate);
-    gs.setQuestionIsFront(Math.random() > 0.5);
+    gs.setQuestionIsFront(true);
+    gs.setSideOfQuestionCanChange(true);
   }
 
   /**
@@ -205,6 +210,7 @@ export class SettingsScene extends Scene {
     gs.setHintStrategy(HintStrategies.SomeWords);
     gs.setSelectionStrategy(SelectionStrategies.Random);
     gs.setQuestionIsFront(getVal(0) < 5);
+    gs.setSideOfQuestionCanChange(true);
   }
 
   /**
@@ -227,30 +233,71 @@ export class SettingsScene extends Scene {
   }
 
   /**
+   * Let the user choosing the side of the card to get the question from.
+   * @private
+   */
+  private askQuestionIsFront() {
+    gs.setPauseStream(true);
+    this.setContent(
+      "question",
+      "Are the question from the front side (easier)?",
+      true,
+    );
+    const possibilities: Record<string, string> = {
+      "From the front": "true",
+      "From the back": "false",
+      Random: "random",
+    };
+    const possibilitiesTexts = Object.keys(possibilities);
+    const firstChoice = possibilitiesTexts[0]!;
+    this.setContent(
+      "choices",
+      this.formatList(possibilitiesTexts, firstChoice),
+    );
+    const selectedChangeCb = (choices: string[]) => {
+      const choice = possibilities[choices[0]!];
+      if (choice === "random") {
+        gs.setQuestionIsFront(Math.random() > 0.5);
+        gs.setSideOfQuestionCanChange(true);
+        this.exitQuestionCommon();
+      }
+      gs.setQuestionIsFront(choice === "true");
+      this.exitQuestionCommon();
+    };
+    const cursorMoveCb = (choice: string) => {
+      this.setContent("choices", this.formatList(possibilitiesTexts, choice));
+    };
+    listSelect.listen(possibilitiesTexts, selectedChangeCb, cursorMoveCb);
+  }
+
+  /**
    * Show a list of available time limits settings and allow the user to select one of them.
    * @private
    */
   private askAmountOfTime() {
     gs.setPauseStream(true);
     this.setContent("question", "What's the time limit?", true);
-    const times: Record<string, number> = {
+    const possibilities: Record<string, number> = {
       Unlimited: Infinity,
       "1 minute": 60,
       "3 minutes": 180,
       "5 minutes": 600,
       "10 minutes": 600,
     };
-    const timesTexts = Object.keys(times);
-    const firstChoice = timesTexts[0]!;
-    this.setContent("choices", this.formatList(timesTexts, firstChoice));
+    const possibilitiesTexts = Object.keys(possibilities);
+    const firstChoice = possibilitiesTexts[0]!;
+    this.setContent(
+      "choices",
+      this.formatList(possibilitiesTexts, firstChoice),
+    );
     const selectedChangeCb = (choices: string[]) => {
-      gs.setTime(times[choices[0]!] ?? Infinity);
+      gs.setTime(possibilities[choices[0]!] ?? Infinity);
       this.exitQuestionCommon();
     };
     const cursorMoveCb = (choice: string) => {
-      this.setContent("choices", this.formatList(timesTexts, choice));
+      this.setContent("choices", this.formatList(possibilitiesTexts, choice));
     };
-    listSelect.listen(timesTexts, selectedChangeCb, cursorMoveCb);
+    listSelect.listen(possibilitiesTexts, selectedChangeCb, cursorMoveCb);
   }
 
   /**

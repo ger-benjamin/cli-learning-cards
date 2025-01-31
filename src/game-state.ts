@@ -27,7 +27,8 @@ class GameState {
   private time: number | null = null;
   private hintRemaining: number | null = null;
   private livesRemaining: number | null = null;
-  private questionIsFront = true;
+  private questionIsFront: boolean | null = null;
+  private sideOfQuestionCanChange = false;
 
   private questionIndex = 0;
   private error = new EventValue<string>();
@@ -158,8 +159,33 @@ class GameState {
     return this.answers.push(answer);
   }
 
+  /**
+   * @returns if the question is from the front or on the back side. Replying
+   * to the front (questionIsFront = true) is considered as easier.
+   */
+  getQuestionIsFront(): boolean | null {
+    return this.questionIsFront;
+  }
+
+  /**
+   * Set the side of the question, side "front" is considered as easier.
+   */
   setQuestionIsFront(value: boolean) {
     this.questionIsFront = value;
+  }
+
+  /**
+   * @returns if the side of the question can change or not.
+   */
+  getSideOfQuestionCanChange(): boolean {
+    return this.sideOfQuestionCanChange;
+  }
+
+  /**
+   * Set the possibility of the question to change the "side" origin.
+   */
+  setSideOfQuestionCanChange(canChange: boolean) {
+    this.sideOfQuestionCanChange = canChange;
   }
 
   /**
@@ -167,7 +193,7 @@ class GameState {
    * if it's the "front", then the "side B" will be the back, and vice versa.
    * */
   getSideA(item: Item): Side {
-    if (this.questionIsFront) {
+    if (this.questionIsFront !== false) {
       return item.card.front;
     } else {
       return item.card.back;
@@ -179,7 +205,7 @@ class GameState {
    * if it's the "front", then the "side A" will be the back, and vice versa.
    */
   getSideB(item: Item): Side {
-    if (this.questionIsFront) {
+    if (this.questionIsFront !== false) {
       return item.card.back;
     } else {
       return item.card.front;
