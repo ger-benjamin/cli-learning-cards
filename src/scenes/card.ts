@@ -9,6 +9,7 @@ import { getCardWidth } from "./card-utils.js";
 import { SelectionStrategy } from "../selection-strategy.js";
 import { Colors, GameStateScene } from "../enums.js";
 import { colorize } from "./colorize-card.js";
+import { emojify } from "node-emoji";
 
 /**
  * A UI for cards questions.
@@ -192,6 +193,7 @@ export class CardScene extends Scene {
     }
     const cardLimit = gs.getCardsLimit();
     if (!item || !cardLimit || gs.getQuestionIndex() >= cardLimit) {
+      gs.setCardColor(Colors.Blue);
       this.exit(GameStateScene.RESULTS);
       return true;
     }
@@ -231,6 +233,11 @@ export class CardScene extends Scene {
     this.updateBanner();
   }
 
+  /**
+   * Generate and print a "game-settings" banner, to let the user know
+   * the current settings and some game states.
+   * @private
+   */
   private updateBanner() {
     const gameMode = gs.getGameMode();
     const selectionStrategy = gs.getSelectionStrategy();
@@ -243,19 +250,19 @@ export class CardScene extends Scene {
     const lives = gs.getLivesRemaining();
     const hints = gs.getHintRemaining();
     const time = gs.getTime();
-    let questionCounter = `Q:${questionIndex + 1}`;
+    let questionCounter = emojify(`:books::${questionIndex + 1}`);
     if (cardLimit !== Infinity) {
       questionCounter = `${questionCounter}/${cardLimit}`;
     }
     gameInfos.push(questionCounter);
     if (lives !== Infinity) {
-      gameInfos.push(`L:${lives}`);
+      gameInfos.push(emojify(`:heart: :${lives}`));
     }
     if (hints !== Infinity) {
-      gameInfos.push(`H:${hints}`);
+      gameInfos.push(emojify(`:bulb::${hints}`));
     }
     if (time !== Infinity) {
-      gameInfos.push(`T:${time}`);
+      gameInfos.push(emojify(`:hourglass_flowing_sand::${time}`));
     }
     this.setContent("mode", mode, true);
     this.setContent("game", gameInfos.join(" - "), false);

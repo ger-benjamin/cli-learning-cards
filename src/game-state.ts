@@ -179,7 +179,6 @@ class GameState {
 
   /**
    * Set the side of the question, side "front" is considered as easier.
-   * Set also the color to bright (front) or normal (back);
    */
   setQuestionIsFront(value: boolean) {
     this.questionIsFront = value;

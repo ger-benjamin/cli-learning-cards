@@ -29,8 +29,11 @@ export class SplashScreenScene extends Scene {
    */
   override start() {
     process.stdin.on("keypress", this.onKeyPress);
+    // See https://emojipedia.org identification_card + white_heavy_check_mark.
+    // node-emoji was not complete...
+    const emojis = "\u{1FAAA}\u{2611}";
     const card = drawCard(
-      ["Cli-learning-cards", "--Press enter--"],
+      [`Cli-learning-cards${emojis}`, "--Press enter--"],
       getCardWidth(this.tWidth),
     );
     this.setContent("all", colorize(card), true);

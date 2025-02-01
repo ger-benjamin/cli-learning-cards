@@ -32,6 +32,7 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
-    "chalk": "^5.4.1"
+    "chalk": "^5.4.1",
+    "node-emoji": "^2.2.0"
   }
 }

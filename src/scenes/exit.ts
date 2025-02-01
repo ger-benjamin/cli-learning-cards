@@ -4,6 +4,7 @@ import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { GameStateScene } from "../enums.js";
 import { colorize } from "./colorize-card.js";
+import { emojify } from "node-emoji";
 
 /**
  * A nice exit screen to the user.
@@ -12,7 +13,7 @@ export class ExitScene extends Scene {
   constructor() {
     super();
     this.canWrite = false;
-    const card = drawCard(["Bye o/"], getCardWidth(this.tWidth));
+    const card = drawCard([emojify("Bye :wave:")], getCardWidth(this.tWidth));
     this.content.set("all", colorize(card, undefined, false));
   }
 

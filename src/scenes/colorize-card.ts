@@ -2,6 +2,12 @@ import gs from "../game-state.js";
 import { Colors } from "../enums.js";
 import chalk from "chalk";
 
+/**
+ * Use Chalk to colorize the text with the given (background) color.
+ * If no color is provided, take the CardColor in the game-state.
+ * BrightParam is to use the "bright" color variation.
+ * @returns The colorized text or the text as is.
+ */
 export const colorize = (
   text: string,
   colorParam?: Colors,
