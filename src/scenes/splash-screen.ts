@@ -2,6 +2,7 @@ import { Scene } from "./scene.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { GameStateScene } from "../enums.js";
+import { colorize } from "./colorize-card.js";
 
 /**
  * A nice splash screen to welcome the user.
@@ -32,7 +33,7 @@ export class SplashScreenScene extends Scene {
       ["Cli-learning-cards", "--Press enter--"],
       getCardWidth(this.tWidth),
     );
-    this.setContent("all", card, true);
+    this.setContent("all", colorize(card), true);
     super.start();
   }
 

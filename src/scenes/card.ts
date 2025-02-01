@@ -7,7 +7,8 @@ import { CorrectionStrategy } from "../correction-strategy.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { SelectionStrategy } from "../selection-strategy.js";
-import { GameStateScene } from "../enums.js";
+import { Colors, GameStateScene } from "../enums.js";
+import { colorize } from "./colorize-card.js";
 
 /**
  * A UI for cards questions.
@@ -68,7 +69,7 @@ export class CardScene extends Scene {
     const question = getOneSideText(gs.getSideA(item));
     const hintText = hint ? `(${this.hintStrategy.getHint(item)})` : "";
     const card = drawCard([question, hintText], getCardWidth(this.tWidth));
-    this.setContent("card", card);
+    this.setContent("card", colorize(card));
   }
 
   /**
@@ -121,12 +122,12 @@ export class CardScene extends Scene {
     const isCorrect = this.correctionStrategy.isCorrect(this.item, answer);
     this.handleAnswer(displayedQuestion, answer, isCorrect);
     if (!isCorrect) {
-      this.setContent("info", `WRONG !`);
+      gs.setCardColor(Colors.Red);
       gs.setLivesRemaining((gs.getLivesRemaining() ?? 1) - 1);
+      this.showQuestion(this.item, this.hint);
       this.checkEnd(this.item);
       return;
     }
-    this.setContent("info", `Correct :-)`);
     this.nextQuestion();
   }
 
@@ -162,6 +163,7 @@ export class CardScene extends Scene {
    * @private
    */
   private nextQuestion() {
+    gs.setCardColor(Colors.Blue);
     gs.setQuestionIndex(gs.getQuestionIndex() + 1);
     const item = this.selectItem();
     if (this.checkEnd(item)) {

@@ -6,11 +6,13 @@ import { getSideTexts } from "../utils.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import {
+  Colors,
   GameStateScene,
   validNegativeAnswers,
   validPositiveAnswers,
 } from "../enums.js";
 import { fromAnyItemToItem } from "../json-to-source.js";
+import { colorize } from "./colorize-card.js";
 
 /**
  * A UI for results.
@@ -159,7 +161,7 @@ Results:
       getCardWidth(this.tWidth),
     );
     this.setContent("head", "", false);
-    this.setContent("title", card);
+    this.setContent("title", colorize(card, undefined, false));
     return false;
   }
 
@@ -172,7 +174,7 @@ Results:
       ["Ok, the results are left unsaved."],
       getCardWidth(this.tWidth),
     );
-    this.setContent("title", card);
+    this.setContent("title", colorize(card, undefined, false));
   }
 
   /**
@@ -206,7 +208,7 @@ Results:
       return;
     }
     const card = drawCard(["Results saved!"], getCardWidth(this.tWidth));
-    this.setContent("title", card);
+    this.setContent("title", colorize(card, Colors.Green, false));
   }
 
   /**

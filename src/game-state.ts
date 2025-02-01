@@ -1,9 +1,10 @@
 import type { Item, Side, SourceJson } from "./source-json.js";
 import type { Answer } from "./game-state-types.js";
 import { EventValue } from "./event.js";
-import { GameMode } from "./enums.js";
 import {
+  Colors,
   CorrectionStrategies,
+  GameMode,
   GameStateScene,
   HintStrategies,
   SelectionStrategies,
@@ -22,6 +23,7 @@ class GameState {
   private answers: Answer[] = [];
   private sourcePath: URL | null = null;
   private sourceJson: SourceJson | null = null;
+  private cardColor: Colors = Colors.Blue;
   private gameMode: GameMode | null = null;
   private cardsLimit: number | null = null;
   private time: number | null = null;
@@ -53,6 +55,14 @@ class GameState {
 
   setActiveScene(value: GameStateScene) {
     this.activeScene.setValue(value);
+  }
+
+  getCardColor(): Colors {
+    return this.cardColor;
+  }
+
+  setCardColor(color: Colors) {
+    this.cardColor = color;
   }
 
   getGameMode(): GameMode | null {
@@ -169,6 +179,7 @@ class GameState {
 
   /**
    * Set the side of the question, side "front" is considered as easier.
+   * Set also the color to bright (front) or normal (back);
    */
   setQuestionIsFront(value: boolean) {
     this.questionIsFront = value;

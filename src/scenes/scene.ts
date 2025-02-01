@@ -1,7 +1,8 @@
 import readline from "node:readline";
-import { stdout, stdin } from "node:process";
+import { stdin, stdout } from "node:process";
 import gs from "../game-state.js";
-import { GameStateScene } from "../enums.js";
+import { Colors, GameStateScene } from "../enums.js";
+import { colorize } from "./colorize-card.js";
 
 /**
  * Abstract scene - or UI - to handle user input and render texts.
@@ -56,9 +57,9 @@ export abstract class Scene {
       return;
     }
     // If we can write, set the caret at the cursor position.
-    const caret = "\x1b[32m_\x1b[0m";
     const chars = this.rl.line.split("");
-    chars.splice(this.rl.cursor, 0, caret);
+    const char = chars[this.rl.cursor] || " ";
+    chars.splice(this.rl.cursor, 1, colorize(char, Colors.White, true));
     console.log(chars.join(""));
   }
 
