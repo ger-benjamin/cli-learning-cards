@@ -1,6 +1,6 @@
 {
   "name": "cli-learning-cards",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Small CLI application for repeating terms with a card system.",
   "type": "module",
   "main": "dist/run.js",
