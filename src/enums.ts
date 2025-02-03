@@ -37,3 +37,13 @@ export enum GameMode {
 export const validPositiveAnswers = ["yes", "y", "1", "true", "t"];
 /** Valid negative answers to yes or no questions. */
 export const validNegativeAnswers = ["no", "n", "0", "false", "f"];
+
+/**
+ * Available (background) colors for texts.
+ */
+export enum Colors {
+  Red = "Red",
+  Blue = "Blue",
+  Green = "Green",
+  White = "White",
+}

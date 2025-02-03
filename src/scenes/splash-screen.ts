@@ -2,6 +2,7 @@ import { Scene } from "./scene.js";
 import { drawCard } from "./draw-card.js";
 import { getCardWidth } from "./card-utils.js";
 import { GameStateScene } from "../enums.js";
+import { colorize } from "./colorize-card.js";
 
 /**
  * A nice splash screen to welcome the user.
@@ -28,11 +29,14 @@ export class SplashScreenScene extends Scene {
    */
   override start() {
     process.stdin.on("keypress", this.onKeyPress);
+    // See https://emojipedia.org identification_card + white_heavy_check_mark.
+    // node-emoji was not complete...
+    const emojis = "\u{1FAAA}\u{2611}";
     const card = drawCard(
-      ["Cli-learning-cards", "--Press enter--"],
+      [`Cli-learning-cards${emojis}`, "--Press enter--"],
       getCardWidth(this.tWidth),
     );
-    this.setContent("all", card, true);
+    this.setContent("all", colorize(card), true);
     super.start();
   }
 

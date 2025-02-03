@@ -30,5 +30,9 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0",
     "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "node-emoji": "^2.2.0"
   }
 }
