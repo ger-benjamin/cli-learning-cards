@@ -47,10 +47,9 @@ On cards, you can use the special key words "_hint", "_skip" or "_exit".
 
 ## Next steps
  * Add a "help" scene.
- * Add colors.
- * Add a possibility to select the strategy.
- * Add a possibility to start up with a configuration (args)
+ * Add a possibility to select selection strategy.
  * Add a possibility to edit answers.
+ * Add a possibility to start up with a configuration (args)
  * Release and run it without compiling it.
  * Move to deno ?
  * Add import source script.
